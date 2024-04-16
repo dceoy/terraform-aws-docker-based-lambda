@@ -1,0 +1,15 @@
+---
+version: '3'
+services:
+  lambda-hello-world:
+    container_name: lambda-hello-world
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dceoy/lambda-hello-world:latest
+    entrypoint:
+      - /var/lang/bin/python
+      - -m
+      - awslambdaric
+    command:
+      - app.lambda_handler
