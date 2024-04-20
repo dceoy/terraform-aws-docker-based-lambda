@@ -31,11 +31,11 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
-  region = ${local.env_vars.locals.region}
+  region = "${local.env_vars.locals.region}"
   default_tags {
     tags = {
-      SystemName = ${local.env_vars.locals.system_name}
-      EnvType    = ${local.env_vars.locals.env_type}
+      SystemName = "${local.env_vars.locals.system_name}"
+      EnvType    = "${local.env_vars.locals.env_type}"
     }
   }
 }
