@@ -1,5 +1,5 @@
 locals {
-  env_vars       = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+  env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 }
 
 terraform {
@@ -27,9 +27,9 @@ remote_state {
 }
 
 generate "provider" {
-  path = "provider.tf"
+  path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
-  contents = <<EOF
+  contents  = <<EOF
 provider "aws" {
   region = ${local.env_vars.locals.region}
   default_tags {

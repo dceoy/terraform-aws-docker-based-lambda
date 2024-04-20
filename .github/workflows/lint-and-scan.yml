@@ -30,6 +30,7 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
+      terragrunt-version: latest
   tf-format:
     if: >
       github.event_name == 'pull_request'
@@ -38,6 +39,7 @@ jobs:
     with:
       search-path: .
       terraform-version: latest
+      terragrunt-version: latest
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request'
