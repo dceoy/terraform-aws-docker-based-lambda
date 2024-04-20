@@ -17,14 +17,14 @@ resource "aws_ecr_repository" "container" {
 
 resource "aws_ecr_lifecycle_policy" "container" {
   repository = aws_ecr_repository.container.name
-  policy     = jsonencode({
+  policy = jsonencode({
     rules = [
       {
         rulePriority = 1
         description  = "Keep the latest image"
-        selection    = {
-          tagStatus = "any"
-          countType = "imageCountMoreThan"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
           countNumber = 1
         }
         action = {
@@ -34,10 +34,10 @@ resource "aws_ecr_lifecycle_policy" "container" {
       {
         rulePriority = 2
         description  = "Delete older images after 14 days"
-        selection    = {
-          tagStatus = "any"
-          countType = "sinceImagePushed"
-          countUnit = "days"
+        selection = {
+          tagStatus   = "any"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
           countNumber = 14
         }
         action = {
