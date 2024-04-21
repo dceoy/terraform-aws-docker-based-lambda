@@ -27,3 +27,9 @@ variable "ecr_force_delete" {
   type        = bool
   default     = true
 }
+
+variable "ecr_lifecycle_policy_image_count" {
+  description = "ECR lifecycle policy image count"
+  type        = number
+  default     = 1
+}

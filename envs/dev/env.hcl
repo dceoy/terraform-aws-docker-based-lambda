@@ -7,6 +7,7 @@ locals {
   ecr_repository_name                       = "lambda-hello-world"
   ecr_image_tag_mutability                  = "MUTABLE"
   ecr_force_delete                          = true
+  ecr_lifecycle_policy_image_count          = 1
   s3_expiration_days                        = null
   s3_force_destroy                          = true
   s3_noncurrent_version_expiration_days     = 7

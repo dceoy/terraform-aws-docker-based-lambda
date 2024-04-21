@@ -23,24 +23,11 @@ resource "aws_ecr_lifecycle_policy" "container" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep the latest image"
+        description  = "Keep last images"
         selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"
-          countNumber = 1
-        }
-        action = {
-          type = "expire"
-        }
-      },
-      {
-        rulePriority = 2
-        description  = "Delete older images after 14 days"
-        selection = {
-          tagStatus   = "any"
-          countType   = "sinceImagePushed"
-          countUnit   = "days"
-          countNumber = 14
+          countNumber = var.ecr_lifecycle_policy_image_count
         }
         action = {
           type = "expire"
