@@ -1,0 +1,47 @@
+variable "system_name" {
+  description = "System name"
+  type        = string
+  default     = "acc"
+}
+
+variable "env_type" {
+  description = "Environment type"
+  type        = string
+  default     = "plt"
+}
+
+variable "s3_kms_key_arn" {
+  description = "S3 KMS key ARN"
+  type        = string
+  default     = null
+}
+
+variable "s3_expiration_days" {
+  description = "S3 expiration days"
+  type        = number
+  default     = null
+}
+
+variable "s3_force_destroy" {
+  description = "S3 force destroy"
+  type        = bool
+  default     = true
+}
+
+variable "s3_noncurrent_version_expiration_days" {
+  description = "S3 noncurrent version expiration days"
+  type        = number
+  default     = 7
+}
+
+variable "s3_abort_incomplete_multipart_upload_days" {
+  description = "S3 abort incomplete multipart upload days"
+  type        = number
+  default     = 7
+}
+
+variable "enable_s3_server_access_logging" {
+  description = "Enable S3 server access logging"
+  type        = bool
+  default     = true
+}
