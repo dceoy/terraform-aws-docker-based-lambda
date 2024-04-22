@@ -49,7 +49,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "base" {
   rule {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
-      kms_master_key_id = var.s3_kms_key_arn
+      kms_master_key_id = var.kms_key_arn
       sse_algorithm     = "aws:kms"
     }
   }
@@ -61,7 +61,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log" {
   rule {
     bucket_key_enabled = true
     apply_server_side_encryption_by_default {
-      kms_master_key_id = var.s3_kms_key_arn
+      kms_master_key_id = var.kms_key_arn
       sse_algorithm     = "aws:kms"
     }
   }
@@ -151,4 +151,40 @@ resource "aws_s3_bucket_policy" "log" {
       }
     ]
   })
+}
+
+resource "aws_iam_policy" "s3" {
+  name = "${var.system_name}-${var.env_type}-s3-iam-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "AllowKMSDecrypt"
+        Effect   = "Allow"
+        Action   = ["kms:Decrypt"]
+        Resource = [var.kms_key_arn]
+      },
+      {
+        Sid    = "AllowS3BucketAccess"
+        Effect = "Allow"
+        Action = [
+          "s3:Describe*",
+          "s3:Get*",
+          "s3:List*",
+          "s3-object-lambda:Get*",
+          "s3-object-lambda:List*"
+        ]
+        Resource = [
+          aws_s3_bucket.base.arn,
+          "${aws_s3_bucket.base.arn}/*"
+        ]
+      }
+    ]
+  })
+  path = "/"
+  tags = {
+    Name       = "${var.system_name}-${var.env_type}-s3-iam-policy"
+    SystemName = var.system_name
+    EnvType    = var.env_type
+  }
 }

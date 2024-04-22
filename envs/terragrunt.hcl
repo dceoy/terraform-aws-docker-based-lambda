@@ -6,7 +6,7 @@ terraform {
   extra_arguments "parallelism" {
     commands = get_terraform_commands_that_need_parallelism()
     arguments = [
-      "-parallelism=2"
+      "-parallelism=4"
     ]
   }
 }

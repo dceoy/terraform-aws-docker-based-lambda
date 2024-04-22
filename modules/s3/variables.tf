@@ -1,17 +1,17 @@
 variable "system_name" {
   description = "System name"
   type        = string
-  default     = "acc"
+  default     = "dbl"
 }
 
 variable "env_type" {
   description = "Environment type"
   type        = string
-  default     = "plt"
+  default     = "dev"
 }
 
-variable "s3_kms_key_arn" {
-  description = "S3 KMS key ARN"
+variable "kms_key_arn" {
+  description = "KMS key ARN"
   type        = string
   default     = null
 }

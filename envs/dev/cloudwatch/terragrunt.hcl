@@ -14,5 +14,5 @@ inputs = {
 }
 
 terraform {
-  source = "${get_path_to_repo_root()}/modules/s3"
+  source = "${get_path_to_repo_root()}/modules/cloudwatch"
 }
