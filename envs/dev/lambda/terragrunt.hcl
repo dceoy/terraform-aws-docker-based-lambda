@@ -2,13 +2,6 @@ include "root" {
   path = find_in_parent_folders()
 }
 
-dependency "ecr" {
-  config_path = "../ecr"
-  mock_outputs = {
-    ecr_repository_id = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-function"
-  }
-}
-
 dependency "kms" {
   config_path = "../kms"
   mock_outputs = {
@@ -23,12 +16,19 @@ dependency "s3" {
   }
 }
 
+dependency "docker" {
+  config_path = "../docker"
+  mock_outputs = {
+    docker_registry_image_uri = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-function:latest"
+  }
+}
+
 inputs = {
-  ecr_repository_url = dependency.ecr.outputs.ecr_repository_url
-  kms_key_arn        = dependency.kms.outputs.kms_key_arn
-  s3_iam_policy_arn  = dependency.s3.outputs.s3_iam_policy_arn
+  lambda_image_uri  = dependency.docker.outputs.docker_registry_image_uri
+  kms_key_arn       = dependency.kms.outputs.kms_key_arn
+  s3_iam_policy_arn = dependency.s3.outputs.s3_iam_policy_arn
 }
 
 terraform {
-  source = "${get_path_to_repo_root()}/modules/lambda"
+  source = "${get_repo_root()}/modules/lambda"
 }

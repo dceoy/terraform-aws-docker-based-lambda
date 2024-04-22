@@ -12,4 +12,4 @@ RUN set -e \
 COPY app.py /var/task/app.py
 
 ENTRYPOINT ["/var/lang/bin/python", "-m", "awslambdaric"]
-CMD [ "app.lambda_handler" ]
+CMD ["app.lambda_handler"]

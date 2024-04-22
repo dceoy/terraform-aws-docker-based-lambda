@@ -10,12 +10,6 @@ variable "env_type" {
   default     = "dev"
 }
 
-variable "ecr_repository_url" {
-  description = "ECR repository URL"
-  type        = string
-  # default     = null
-}
-
 variable "kms_key_arn" {
   description = "KMS key ARN"
   type        = string
@@ -34,10 +28,10 @@ variable "lambda_function_name" {
   # default     = null
 }
 
-variable "lambda_image_tag" {
-  description = "Lambda image tag"
+variable "lambda_image_uri" {
+  description = "Lambda image ID"
   type        = string
-  default     = "latest"
+  default     = null
 }
 
 variable "lambda_architecture" {

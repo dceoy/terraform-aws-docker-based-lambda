@@ -8,12 +8,11 @@ services:
       dockerfile: Dockerfile
       x-bake:
         provenance: false
-        #  platforms:
-        #   - linux/arm64/v8
-        #   - linux/arm64
-        #   - linux/amd64
-    image: dceoy/lambda-hello-world:latest
-    # platform: linux/arm64/v8
+        platforms:
+          - linux/arm64
+          # - linux/amd64
+    image: lambda-hello-world:latest
+    platform: linux/arm64
     entrypoint:
       - /var/lang/bin/python
       - -m

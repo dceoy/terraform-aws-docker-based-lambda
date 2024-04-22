@@ -2,7 +2,7 @@ resource "aws_lambda_function" "function" {
   function_name                  = var.lambda_function_name
   role                           = aws_iam_role.function.arn
   package_type                   = "Image"
-  image_uri                      = "${local.ecr_repository_url}:${var.lambda_image_tag}"
+  image_uri                      = local.lambda_image_uri
   architectures                  = var.lambda_architecture != null ? [var.lambda_architecture] : null
   memory_size                    = var.lambda_memory_size
   timeout                        = var.lambda_timeout

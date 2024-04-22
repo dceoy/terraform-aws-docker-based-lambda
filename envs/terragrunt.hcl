@@ -1,7 +1,14 @@
 locals {
-  function_name     = "lambda-hello-world"
-  path_to_repo_root = get_path_to_repo_root()
-  env_vars          = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+  image_name           = "lambda-hello-world"
+  image_tag            = "latest"
+  lambda_architectures = "arm64"
+  docker_image_build_platforms = {
+    "x86_64" = "linux/amd64"
+    "arm64"  = "linux/arm64"
+  }
+  repo_root   = get_repo_root()
+  env_vars    = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+  ecr_address = "${local.env_vars.locals.account_id}.dkr.ecr.${local.env_vars.locals.region}.amazonaws.com"
 }
 
 terraform {
@@ -21,11 +28,17 @@ remote_state {
   }
   config = {
     bucket         = local.env_vars.locals.terraform_s3_bucket
-    key            = "${basename(get_repo_root())}/${local.env_vars.locals.system_name}/${path_relative_to_include()}/terraform.tfstate"
+    key            = "${basename(local.repo_root)}/${local.env_vars.locals.system_name}/${path_relative_to_include()}/terraform.tfstate"
     region         = local.env_vars.locals.region
     encrypt        = true
     dynamodb_table = local.env_vars.locals.terraform_dynamodb_table
   }
+}
+
+generate "version" {
+  path      = "version_override.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = file(find_in_parent_folders("version.tf"))
 }
 
 generate "provider" {
@@ -41,22 +54,33 @@ provider "aws" {
     }
   }
 }
+
+data "aws_ecr_authorization_token" "token" {}
+
+provider "docker" {
+  registry_auth {
+    address  = "${local.ecr_address}"
+    username = data.aws_ecr_authorization_token.token.user_name
+    password = data.aws_ecr_authorization_token.token.password
+  }
+}
 EOF
 }
 
 catalog {
   urls = [
-    "${local.path_to_repo_root}/modules/ecr",
-    "${local.path_to_repo_root}/modules/kms",
-    "${local.path_to_repo_root}/modules/s3",
-    "${local.path_to_repo_root}/modules/lambda"
+    "${local.repo_root}/modules/ecr",
+    "${local.repo_root}/modules/kms",
+    "${local.repo_root}/modules/s3",
+    "${local.repo_root}/modules/docker",
+    "${local.repo_root}/modules/lambda"
   ]
 }
 
 inputs = {
   system_name                                 = local.env_vars.locals.system_name
   env_type                                    = local.env_vars.locals.env_type
-  ecr_repository_name                         = local.function_name
+  ecr_repository_name                         = local.image_name
   ecr_image_tag_mutability                    = "MUTABLE"
   ecr_force_delete                            = true
   ecr_lifecycle_policy_image_count            = 1
@@ -64,9 +88,17 @@ inputs = {
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
   enable_s3_server_access_logging             = true
-  lambda_function_name                        = local.function_name
-  lambda_image_tag                            = "latest"
-  lambda_architecture                         = "x86_64"
+  docker_image_tag                            = local.image_tag
+  docker_image_force_remove                   = true
+  docker_image_keep_locally                   = false
+  docker_image_build_context                  = "${local.repo_root}/docker"
+  docker_image_build_dockerfile               = "${local.repo_root}/docker/Dockerfile"
+  docker_image_build_build_args               = {}
+  docker_image_build_platform                 = local.docker_image_build_platforms[local.lambda_architectures]
+  docker_registry_image_keep_remotely         = false
+  lambda_function_name                        = local.image_name
+  lambda_image_tag                            = local.image_tag
+  lambda_architecture                         = local.lambda_architectures
   lambda_memory_size                          = 128
   lambda_timeout                              = 3
   lambda_reserved_concurrent_executions       = -1
