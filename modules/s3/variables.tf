@@ -13,7 +13,7 @@ variable "env_type" {
 variable "kms_key_arn" {
   description = "KMS key ARN"
   type        = string
-  default     = null
+  # default     = null
 }
 
 variable "s3_expiration_days" {

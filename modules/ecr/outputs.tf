@@ -1,4 +1,4 @@
-output "ecr_repository_id" {
-  description = "ECR repository ID"
-  value       = aws_ecr_repository.container.registry_id
+output "ecr_repository_url" {
+  description = "ECR repository URL"
+  value       = aws_ecr_repository.container.repository_url
 }

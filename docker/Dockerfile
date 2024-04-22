@@ -1,9 +1,9 @@
 FROM public.ecr.aws/lambda/python:3.12
 
 RUN set -e \
-      && yum -y upgrade \
-      && yum clean all \
-      && rm -rf /var/cache/yum
+      && dnf -y upgrade \
+      && dnf clean all \
+      && rm -rf /var/cache/dnf
 
 RUN set -e \
       && /var/lang/bin/pip install -U --no-cache-dir pip \
