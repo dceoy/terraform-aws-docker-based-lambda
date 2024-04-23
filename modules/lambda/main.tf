@@ -1,5 +1,6 @@
 resource "aws_lambda_function" "function" {
   function_name                  = var.lambda_function_name
+  description                    = var.lambda_function_name
   role                           = aws_iam_role.function.arn
   package_type                   = "Image"
   image_uri                      = local.lambda_image_uri
@@ -45,7 +46,7 @@ resource "aws_lambda_function" "function" {
 
 resource "aws_cloudwatch_log_group" "function" {
   name              = "/${var.system_name}/${var.env_type}/lambda/${var.lambda_function_name}"
-  retention_in_days = var.lambda_cloudwatch_logs_retention_in_days
+  retention_in_days = var.cloudwatch_logs_retention_in_days
   kms_key_id        = var.kms_key_arn
   tags = {
     Name       = "/${var.system_name}/${var.env_type}/lambda/${var.lambda_function_name}"

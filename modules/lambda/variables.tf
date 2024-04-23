@@ -10,6 +10,16 @@ variable "env_type" {
   default     = "dev"
 }
 
+variable "cloudwatch_logs_retention_in_days" {
+  description = "CloudWatch Logs retention in days"
+  type        = number
+  default     = 14
+  validation {
+    condition     = var.cloudwatch_logs_retention_in_days >= 1 && var.cloudwatch_logs_retention_in_days <= 3653
+    error_message = "CloudWatch Logs retention in days must be between 1 and 3653"
+  }
+}
+
 variable "kms_key_arn" {
   description = "KMS key ARN"
   type        = string
@@ -151,15 +161,5 @@ variable "lambda_provisioned_concurrent_executions" {
   validation {
     condition     = var.lambda_provisioned_concurrent_executions == -1 || var.lambda_provisioned_concurrent_executions >= 0
     error_message = "Lambda provisioned concurrent executions must be -1 or greater"
-  }
-}
-
-variable "lambda_cloudwatch_logs_retention_in_days" {
-  description = "Lambda CloudWatch Logs retention in days"
-  type        = number
-  default     = 14
-  validation {
-    condition     = var.lambda_cloudwatch_logs_retention_in_days >= 1 && var.lambda_cloudwatch_logs_retention_in_days <= 3653
-    error_message = "Lambda CloudWatch Logs retention in days must be between 1 and 3653"
   }
 }
