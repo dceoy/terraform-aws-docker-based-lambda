@@ -35,12 +35,6 @@ remote_state {
   }
 }
 
-generate "version" {
-  path      = "version_override.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = file(find_in_parent_folders("version.tf"))
-}
-
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite_terragrunt"
