@@ -36,3 +36,10 @@ Installation
     ```sh
     $ terragrunt run-all apply --terragrunt-working-dir='envs/dev/' --terragrunt-non-interactive
     ```
+
+Cleanup
+-------
+
+```sh
+$ terragrunt run-all destroy --terragrunt-working-dir='envs/dev/' --terragrunt-non-interactive
+```

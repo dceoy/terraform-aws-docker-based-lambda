@@ -1,5 +1,5 @@
 resource "docker_image" "container" {
-  name         = "${var.docker_image_name}:${var.docker_image_tag}"
+  name         = "${local.docker_image_name}:${var.docker_image_tag}"
   force_remove = var.docker_image_force_remove
   keep_locally = var.docker_image_keep_locally
   build {

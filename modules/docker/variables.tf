@@ -13,7 +13,7 @@ variable "env_type" {
 variable "docker_image_name" {
   description = "Docker image name"
   type        = string
-  # default     = null
+  default     = null
 }
 
 variable "docker_image_tag" {
