@@ -9,7 +9,7 @@ resource "docker_image" "container" {
     platform   = var.docker_image_build_platform
   }
   triggers = {
-    source_sha1 = local.source_sha1
+    trigger_files_sha1 = local.trigger_files_sha1
   }
 }
 

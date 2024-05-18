@@ -63,7 +63,9 @@ resource "aws_lambda_provisioned_concurrency_config" "function" {
 }
 
 resource "aws_iam_role" "function" {
-  name = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
+  name        = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
+  path        = "/"
+  description = "Lambda execution IAM role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -83,7 +85,6 @@ resource "aws_iam_role" "function" {
     aws_iam_policy.logs.arn,
     var.s3_iam_policy_arn
   ])
-  path = "/"
   tags = {
     Name    = "${var.system_name}-${var.env_type}-lambda-execution-role"
     System  = var.system_name
@@ -92,7 +93,9 @@ resource "aws_iam_role" "function" {
 }
 
 resource "aws_iam_policy" "logs" {
-  name = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
+  name        = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
+  description = "CloudWatch logs policy"
+  path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -120,7 +123,6 @@ resource "aws_iam_policy" "logs" {
       }
     ]
   })
-  path = "/"
   tags = {
     Name       = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
     SystemName = var.system_name

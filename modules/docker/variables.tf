@@ -58,6 +58,12 @@ variable "docker_image_build_platform" {
   default     = null
 }
 
+variable "docker_image_build_trigger_file_patterns" {
+  description = "Docker image build trigger file patterns"
+  type        = list(string)
+  default     = ["**"]
+}
+
 variable "docker_registry_image_keep_remotely" {
   description = "Docker registry image keep remotely"
   type        = bool
