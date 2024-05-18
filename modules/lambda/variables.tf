@@ -44,6 +44,12 @@ variable "lambda_image_uri" {
   default     = null
 }
 
+variable "lambda_image_tag" {
+  description = "Lambda image tag"
+  type        = string
+  default     = null
+}
+
 variable "lambda_architecture" {
   description = "Lambda architecture"
   type        = string

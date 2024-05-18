@@ -1,5 +1,5 @@
 resource "docker_image" "container" {
-  name         = "${local.docker_image_name}:${var.docker_image_tag}"
+  name         = "${local.docker_image_name}:${local.docker_image_tag}"
   force_remove = var.docker_image_force_remove
   keep_locally = var.docker_image_keep_locally
   build {
@@ -9,7 +9,7 @@ resource "docker_image" "container" {
     platform   = var.docker_image_build_platform
   }
   triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset(path.module, "${var.docker_image_build_context}/*") : filesha1(f)]))
+    source_sha1 = local.source_sha1
   }
 }
 

@@ -19,7 +19,7 @@ variable "docker_image_name" {
 variable "docker_image_tag" {
   description = "Docker image tag"
   type        = string
-  default     = "latest"
+  default     = null
 }
 
 variable "docker_image_force_remove" {

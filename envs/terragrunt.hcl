@@ -1,6 +1,5 @@
 locals {
   image_name           = "lambda-hello-world"
-  image_tag            = "latest"
   lambda_architectures = "arm64"
   docker_image_build_platforms = {
     "x86_64" = "linux/amd64"
@@ -74,7 +73,6 @@ inputs = {
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
   enable_s3_server_access_logging             = true
-  docker_image_tag                            = local.image_tag
   docker_image_force_remove                   = true
   docker_image_keep_locally                   = false
   docker_image_build_context                  = "${local.repo_root}/docker"
@@ -84,7 +82,6 @@ inputs = {
   docker_registry_image_keep_remotely         = false
   cloudwatch_logs_retention_in_days           = 14
   lambda_function_name                        = local.image_name
-  lambda_image_tag                            = local.image_tag
   lambda_architecture                         = local.lambda_architectures
   lambda_memory_size                          = 128
   lambda_timeout                              = 3
