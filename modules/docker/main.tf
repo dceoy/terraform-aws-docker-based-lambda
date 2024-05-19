@@ -8,7 +8,10 @@ resource "docker_image" "container" {
     build_args = var.docker_image_build_build_args
     platform   = var.docker_image_build_platform
     target     = var.docker_image_build_target
-    tag        = [for t in var.ecr_image_secondary_tags : "${local.docker_image_name}:${t}"]
+    tag = [
+      for t in var.ecr_image_secondary_tags
+      : (contains(t, ":") ? t : "${local.docker_image_name}:${t}")
+    ]
   }
   triggers = {
     trigger_files_sha1 = local.trigger_files_sha1
