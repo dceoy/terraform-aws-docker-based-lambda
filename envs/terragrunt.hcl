@@ -64,6 +64,7 @@ inputs = {
   system_name                                 = local.env_vars.locals.system_name
   env_type                                    = local.env_vars.locals.env_type
   ecr_repository_name                         = local.image_name
+  ecr_image_secondary_tags                    = ["latest"]
   ecr_image_tag_mutability                    = "MUTABLE"
   ecr_force_delete                            = true
   ecr_lifecycle_policy_image_count            = 1

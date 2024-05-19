@@ -10,26 +10,26 @@ variable "env_type" {
   default     = "dev"
 }
 
-variable "docker_image_name" {
-  description = "Docker image name"
+variable "ecr_repository_url" {
+  description = "ECR repository URL"
   type        = string
   default     = null
 }
 
-variable "docker_image_tag" {
-  description = "Docker image tag"
-  type        = string
-  default     = null
+variable "ecr_image_secondary_tags" {
+  description = "ECR image secondary tags"
+  type        = list(string)
+  default     = []
 }
 
 variable "docker_image_force_remove" {
-  description = "Docker image force remove"
+  description = "Remove the image forcibly when the resource is destroyed"
   type        = bool
   default     = false
 }
 
 variable "docker_image_keep_locally" {
-  description = "Docker image keep locally"
+  description = "Keep the local image on destroy operation"
   type        = bool
   default     = false
 }
@@ -41,31 +41,37 @@ variable "docker_image_build_context" {
 }
 
 variable "docker_image_build_dockerfile" {
-  description = "Docker image build dockerfile"
+  description = "Dockerfile name"
   type        = string
   default     = "Dockerfile"
 }
 
 variable "docker_image_build_build_args" {
-  description = "Docker image build build args"
+  description = "Docker image build-time variables"
   type        = map(string)
   default     = {}
 }
 
 variable "docker_image_build_platform" {
-  description = "Docker image build platform"
+  description = "Docker image platform"
+  type        = string
+  default     = null
+}
+
+variable "docker_image_build_target" {
+  description = "Docker image build target stage"
   type        = string
   default     = null
 }
 
 variable "docker_image_build_trigger_file_patterns" {
-  description = "Docker image build trigger file patterns"
+  description = "Patterns to match files that will trigger a build"
   type        = list(string)
   default     = ["**"]
 }
 
 variable "docker_registry_image_keep_remotely" {
-  description = "Docker registry image keep remotely"
+  description = "Keep the remote image on destroy operation"
   type        = bool
   default     = false
 }
