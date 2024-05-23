@@ -1,6 +1,6 @@
 locals {
-  image_name           = "lambda-hello-world"
-  lambda_architectures = "arm64"
+  image_name          = "lambda-hello-world"
+  lambda_architecture = "arm64"
   docker_image_build_platforms = {
     "x86_64" = "linux/amd64"
     "arm64"  = "linux/arm64"
@@ -79,11 +79,11 @@ inputs = {
   docker_image_build_context                  = "${local.repo_root}/docker"
   docker_image_build_dockerfile               = "Dockerfile"
   docker_image_build_build_args               = {}
-  docker_image_build_platform                 = local.docker_image_build_platforms[local.lambda_architectures]
+  docker_image_build_platform                 = local.docker_image_build_platforms[local.lambda_architecture]
   docker_registry_image_keep_remotely         = false
   cloudwatch_logs_retention_in_days           = 14
   lambda_function_name                        = local.image_name
-  lambda_architecture                         = local.lambda_architectures
+  lambda_architectures                        = [local.lambda_architecture]
   lambda_memory_size                          = 128
   lambda_timeout                              = 3
   lambda_reserved_concurrent_executions       = -1

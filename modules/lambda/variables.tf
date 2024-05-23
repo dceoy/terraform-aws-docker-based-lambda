@@ -50,18 +50,18 @@ variable "lambda_image_tag" {
   default     = null
 }
 
-variable "lambda_architecture" {
-  description = "Lambda architecture"
-  type        = string
-  default     = null
+variable "lambda_architectures" {
+  description = "Lambda instruction set architectures"
+  type        = list(string)
+  default     = ["x86_64"]
   validation {
-    condition     = var.lambda_architecture == null || var.lambda_architecture == "x86_64" || var.lambda_architecture == "arm64"
-    error_message = "Lambda architecture must be either x86_64 or arm64"
+    condition     = alltrue([for a in var.lambda_architectures : contains(["x86_64", "arm64"], a)])
+    error_message = "Lambda architectures must be x86_64 or arm64"
   }
 }
 
 variable "lambda_memory_size" {
-  description = "Lambda memory size"
+  description = "Lambda memory size in MB"
   type        = number
   default     = 128
   validation {
@@ -117,7 +117,7 @@ variable "lambda_logging_config_system_log_level" {
 }
 
 variable "lambda_ephemeral_storage_size" {
-  description = "Lambda ephemeral storage size"
+  description = "Lambda ephemeral storage (/tmp) size in MB"
   type        = number
   default     = 512
   validation {

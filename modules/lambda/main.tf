@@ -4,7 +4,7 @@ resource "aws_lambda_function" "function" {
   role                           = aws_iam_role.function.arn
   package_type                   = "Image"
   image_uri                      = local.lambda_image_uri
-  architectures                  = var.lambda_architecture != null ? [var.lambda_architecture] : null
+  architectures                  = var.lambda_architectures
   memory_size                    = var.lambda_memory_size
   timeout                        = var.lambda_timeout
   reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
