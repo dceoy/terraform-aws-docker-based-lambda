@@ -7,6 +7,9 @@ locals {
   region             = data.aws_region.current.name
   trigger_files_sha1 = sha1(join(",", [for f in setunion([for p in var.docker_image_build_trigger_file_patterns : fileset(var.docker_image_build_context, p)]...) : "${f}:${filesha1("${var.docker_image_build_context}/${f}")}"]))
   docker_image_name  = var.ecr_repository_url != null ? var.ecr_repository_url : "${local.account_id}.dkr.ecr.${local.region}.amazonaws.com/${var.system_name}-${var.env_type}-lambda-function"
+  docker_image_secondary_tags = [
+    for t in var.ecr_image_secondary_tags : (contains(t, ":") ? t : "${local.docker_image_name}:${t}")
+  ]
 }
 
 data "aws_ecr_authorization_token" "token" {}
