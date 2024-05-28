@@ -98,30 +98,40 @@ resource "aws_iam_policy" "logs" {
   path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Sid      = "AllowKMSDecrypt"
-        Effect   = "Allow"
-        Action   = ["kms:Decrypt"]
-        Resource = [var.kms_key_arn]
-      },
-      {
-        Sid      = "AllowDescribeLogGroups"
-        Effect   = "Allow"
-        Action   = ["logs:DescribeLogGroups"]
-        Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
-      },
-      {
-        Sid    = "AllowLogStreamAccess"
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams"
-        ]
-        Resource = ["${aws_cloudwatch_log_group.function.arn}:*"]
-      }
-    ]
+    Statement = concat(
+      [
+        {
+          Sid      = "AllowDescribeLogGroups"
+          Effect   = "Allow"
+          Action   = ["logs:DescribeLogGroups"]
+          Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
+        },
+        {
+          Sid    = "AllowLogStreamAccess"
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams"
+          ]
+          Resource = ["${aws_cloudwatch_log_group.function.arn}:*"]
+        }
+      ],
+      (
+        var.kms_key_arn != null ? [
+          {
+            Sid    = "AllowKMSAccess"
+            Effect = "Allow"
+            Action = [
+              "kms:Encrypt",
+              "kms:Decrypt",
+              "kms:GenerateDataKey"
+            ]
+            Resource = [var.kms_key_arn]
+          }
+        ] : []
+      )
+    )
   })
   tags = {
     Name       = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
