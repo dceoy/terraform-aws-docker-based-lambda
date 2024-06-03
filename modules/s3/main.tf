@@ -154,34 +154,41 @@ resource "aws_s3_bucket_policy" "log" {
 }
 
 resource "aws_iam_policy" "s3" {
-  name = "${var.system_name}-${var.env_type}-s3-iam-policy"
+  name        = "${var.system_name}-${var.env_type}-s3-iam-policy"
+  description = "S3 IAM policy"
+  path        = "/"
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Sid      = "AllowKMSDecrypt"
-        Effect   = "Allow"
-        Action   = ["kms:Decrypt"]
-        Resource = [var.kms_key_arn]
-      },
-      {
-        Sid    = "AllowS3BucketAccess"
-        Effect = "Allow"
-        Action = [
-          "s3:Describe*",
-          "s3:Get*",
-          "s3:List*",
-          "s3-object-lambda:Get*",
-          "s3-object-lambda:List*"
-        ]
-        Resource = [
-          aws_s3_bucket.base.arn,
-          "${aws_s3_bucket.base.arn}/*"
-        ]
-      }
-    ]
+    Statement = concat(
+      [
+        {
+          Sid    = "AllowS3BucketAccess"
+          Effect = "Allow"
+          Action = [
+            "s3:Describe*",
+            "s3:Get*",
+            "s3:List*",
+            "s3-object-lambda:Get*",
+            "s3-object-lambda:List*"
+          ]
+          Resource = [
+            aws_s3_bucket.base.arn,
+            "${aws_s3_bucket.base.arn}/*"
+          ]
+        }
+      ],
+      (
+        var.kms_key_arn != null ? [
+          {
+            Sid      = "AllowKMSDecrypt"
+            Effect   = "Allow"
+            Action   = ["kms:Decrypt"]
+            Resource = [var.kms_key_arn]
+          }
+        ] : []
+      )
+    )
   })
-  path = "/"
   tags = {
     Name       = "${var.system_name}-${var.env_type}-s3-iam-policy"
     SystemName = var.system_name

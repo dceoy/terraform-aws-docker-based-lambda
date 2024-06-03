@@ -64,8 +64,8 @@ resource "aws_lambda_provisioned_concurrency_config" "function" {
 
 resource "aws_iam_role" "function" {
   name        = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
-  path        = "/"
   description = "Lambda execution IAM role"
+  path        = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
