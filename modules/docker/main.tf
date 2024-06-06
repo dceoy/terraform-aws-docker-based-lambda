@@ -1,5 +1,5 @@
 resource "docker_image" "container" {
-  name         = "${local.docker_image_name}:sha1-${local.trigger_files_sha1}"
+  name         = "${local.docker_image_name}:${local.docker_image_primary_tag}"
   force_remove = var.docker_image_force_remove
   keep_locally = var.docker_image_keep_locally
   build {
@@ -11,7 +11,7 @@ resource "docker_image" "container" {
     tag        = local.docker_image_secondary_tags
   }
   triggers = {
-    trigger_files_sha1 = local.trigger_files_sha1
+    docker_image_primary_tag = local.docker_image_primary_tag
   }
 }
 

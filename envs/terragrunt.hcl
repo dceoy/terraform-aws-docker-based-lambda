@@ -81,6 +81,7 @@ inputs = {
   docker_image_build_build_args               = {}
   docker_image_build_platform                 = local.docker_image_build_platforms[local.lambda_architecture]
   docker_registry_image_keep_remotely         = false
+  docker_host                                 = get_env("DOCKER_HOST", "unix:///var/run/docker.sock")
   cloudwatch_logs_retention_in_days           = 30
   lambda_function_name                        = local.image_name
   lambda_architectures                        = [local.lambda_architecture]

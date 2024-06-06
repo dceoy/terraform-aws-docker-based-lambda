@@ -75,3 +75,9 @@ variable "docker_registry_image_keep_remotely" {
   type        = bool
   default     = false
 }
+
+variable "docker_host" {
+  description = "Docker daemon address"
+  type        = string
+  default     = "unix:///var/run/docker.sock"
+}
