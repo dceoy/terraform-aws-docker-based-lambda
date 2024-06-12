@@ -76,6 +76,7 @@ inputs = {
   enable_s3_server_access_logging             = true
   docker_image_force_remove                   = true
   docker_image_keep_locally                   = false
+  docker_image_build                          = true
   docker_image_build_context                  = "${local.repo_root}/docker"
   docker_image_build_dockerfile               = "Dockerfile"
   docker_image_build_build_args               = {}

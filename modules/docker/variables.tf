@@ -28,10 +28,10 @@ variable "docker_image_force_remove" {
   default     = false
 }
 
-variable "docker_image_keep_locally" {
-  description = "Keep the local image on destroy operation"
+variable "docker_image_build" {
+  description = "Build the image"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "docker_image_build_context" {
@@ -68,12 +68,6 @@ variable "docker_image_build_trigger_file_patterns" {
   description = "Patterns to match files that will trigger a build"
   type        = list(string)
   default     = ["**"]
-}
-
-variable "docker_registry_image_keep_remotely" {
-  description = "Keep the remote image on destroy operation"
-  type        = bool
-  default     = false
 }
 
 variable "docker_host" {
