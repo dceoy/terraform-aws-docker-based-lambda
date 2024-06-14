@@ -1,5 +1,5 @@
-resource "docker_image" "container" {
-  name         = "${local.docker_image_name}:${local.docker_image_primary_tag}"
+resource "docker_image" "primary" {
+  name         = local.docker_image_primary_name
   force_remove = var.docker_image_force_remove
   keep_locally = true
   dynamic "build" {
@@ -13,32 +13,29 @@ resource "docker_image" "container" {
     }
   }
   triggers = {
-    docker_image_primary_tag = local.docker_image_primary_tag
+    image_name = local.docker_image_primary_name
   }
 }
 
-resource "docker_tag" "container" {
-  for_each     = toset(local.docker_image_secondary_tags)
-  source_image = docker_image.container.name
+resource "docker_tag" "secondary" {
+  for_each     = toset(local.docker_image_secondary_names)
+  source_image = docker_image.primary.name
   target_image = each.key
 }
 
 resource "docker_registry_image" "primary" {
-  name          = docker_image.container.name
+  name          = docker_image.primary.name
   keep_remotely = true
   triggers = {
-    image_id = docker_image.container.image_id
+    image_id = docker_image.primary.image_id
   }
 }
 
 resource "docker_registry_image" "secondary" {
-  depends_on = [docker_registry_image.primary, docker_tag.container]
-  for_each = {
-    for t in local.docker_image_secondary_tags : t => t
-  }
+  for_each      = docker_tag.secondary
   name          = each.key
   keep_remotely = true
   triggers = {
-    image_id = docker_image.container.image_id
+    primary_registry_image_id = docker_registry_image.primary.id
   }
 }
