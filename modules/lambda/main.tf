@@ -63,9 +63,10 @@ resource "aws_lambda_provisioned_concurrency_config" "function" {
 }
 
 resource "aws_iam_role" "function" {
-  name        = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
-  description = "Lambda execution IAM role"
-  path        = "/"
+  name                  = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
+  description           = "Lambda execution IAM role"
+  force_detach_policies = var.iam_role_force_detach_policies
+  path                  = "/"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

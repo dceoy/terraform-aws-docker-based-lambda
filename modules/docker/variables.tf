@@ -23,13 +23,13 @@ variable "ecr_image_secondary_tags" {
 }
 
 variable "docker_image_force_remove" {
-  description = "Remove the image forcibly when the resource is destroyed"
+  description = "Whether to remove the image forcibly when the resource is destroyed"
   type        = bool
   default     = false
 }
 
 variable "docker_image_build" {
-  description = "Build the image"
+  description = "Whether to build the Docker image"
   type        = bool
   default     = true
 }

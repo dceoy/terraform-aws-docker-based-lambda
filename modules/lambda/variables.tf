@@ -32,6 +32,12 @@ variable "s3_iam_policy_arn" {
   default     = null
 }
 
+variable "iam_role_force_detach_policies" {
+  description = "Whether to force detaching any IAM policies the IAM role has before destroying it"
+  type        = bool
+  default     = true
+}
+
 variable "lambda_function_name" {
   description = "Lambda function name"
   type        = string

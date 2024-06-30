@@ -11,7 +11,7 @@ variable "env_type" {
 }
 
 variable "create_kms_key" {
-  description = "Create a KMS key"
+  description = "Whether to create a KMS key"
   type        = bool
   default     = true
 }

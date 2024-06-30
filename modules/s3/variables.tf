@@ -23,7 +23,7 @@ variable "s3_expiration_days" {
 }
 
 variable "s3_force_destroy" {
-  description = "S3 force destroy"
+  description = "Whether to delete all objects from the bucket when destroying the S3 bucket"
   type        = bool
   default     = true
 }
@@ -41,7 +41,7 @@ variable "s3_abort_incomplete_multipart_upload_days" {
 }
 
 variable "enable_s3_server_access_logging" {
-  description = "Enable S3 server access logging"
+  description = "Whether to enable S3 server access logging"
   type        = bool
   default     = true
 }

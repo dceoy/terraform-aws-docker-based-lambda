@@ -23,7 +23,7 @@ variable "ecr_image_tag_mutability" {
 }
 
 variable "ecr_force_delete" {
-  description = "ECR force delete"
+  description = "Whether to delete the ECR repository and all images in it"
   type        = bool
   default     = true
 }
