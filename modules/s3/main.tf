@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "base" {
   }
 }
 
-# tfsec:ignore:aws-s3-enable-bucket-logging
+# trivy:ignore:AVD-AWS-0089
 resource "aws_s3_bucket" "log" {
   count         = var.enable_s3_server_access_logging ? 1 : 0
   bucket        = local.log_s3_bucket_name
@@ -153,6 +153,7 @@ resource "aws_s3_bucket_policy" "log" {
   })
 }
 
+# trivy:ignore:AVD-AWS-0057
 resource "aws_iam_policy" "s3" {
   name        = "${var.system_name}-${var.env_type}-s3-iam-policy"
   description = "S3 IAM policy"

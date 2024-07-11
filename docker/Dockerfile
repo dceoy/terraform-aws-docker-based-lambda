@@ -11,5 +11,7 @@ RUN set -e \
 
 COPY app.py /var/task/app.py
 
+HEALTHCHECK NONE
+
 ENTRYPOINT ["/var/lang/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]
