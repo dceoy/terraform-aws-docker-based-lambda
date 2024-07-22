@@ -1,5 +1,5 @@
 ---
-name: Lint, scan, and formatting
+name: CI workflows
 on:
   push:
     branches:
@@ -13,25 +13,25 @@ on:
         required: true
         type: choice
         options:
-          - lint
+          - lint-and-scan
           - format
         description: Choose the workflow to run
-        default: lint
+        default: lint-and-scan
 permissions:
   contents: write
   pull-requests: write
 jobs:
-  tf-lint-and-scan:
+  terraform-lint-and-scan:
     if: >
       github.event_name == 'push'
       || github.event_name == 'pull_request'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint')
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint-and-scan')
     uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lint-and-scan.yml@main
     with:
       search-path: .
       terraform-version: latest
       terragrunt-version: latest
-  tf-format:
+  terraform-format:
     if: >
       github.event_name == 'pull_request'
       || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'format')
@@ -42,8 +42,7 @@ jobs:
       terragrunt-version: latest
   dependabot-auto-merge:
     if: >
-      github.event_name == 'pull_request'
+      github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
     needs:
-      - tf-lint-and-scan
-      - tf-format
+      - terraform-lint-and-scan
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main

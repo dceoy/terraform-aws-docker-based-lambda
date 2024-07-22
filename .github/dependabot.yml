@@ -21,23 +21,3 @@ updates:
     directory: /modules/docker/
     schedule:
       interval: daily
-  - package-ecosystem: terraform
-    directory: /envs/dev/ecr/
-    schedule:
-      interval: daily
-  - package-ecosystem: terraform
-    directory: /envs/dev/docker/
-    schedule:
-      interval: daily
-  - package-ecosystem: terraform
-    directory: /envs/dev/kms/
-    schedule:
-      interval: daily
-  - package-ecosystem: terraform
-    directory: /envs/dev/s3/
-    schedule:
-      interval: daily
-  - package-ecosystem: terraform
-    directory: /envs/dev/lambda/
-    schedule:
-      interval: daily
