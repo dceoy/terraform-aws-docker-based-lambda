@@ -15,6 +15,7 @@ on:
         options:
           - lint-and-scan
           - format
+          - upgrade
         description: Choose the workflow to run
         default: lint-and-scan
 permissions:
@@ -40,9 +41,23 @@ jobs:
       search-path: .
       terraform-version: latest
       terragrunt-version: latest
+  dependabot-terraform-lock-files-upgrade:
+    if: >
+      (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/'))
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
+    uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lock-files-upgrade.yml@main
+    with:
+      terraform-working-directory-to-version-tf-json: >
+        {"envs/dev/docker": "modules/docker/version.tf",
+         "envs/dev/ecr": "modules/ecr/version.tf",
+         "envs/dev/kms": "modules/kms/version.tf",
+         "envs/dev/lambda": "modules/lambda/version.tf",
+         "envs/dev/s3": "modules/s3/version.tf"}
+      terraform-version: latest
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
     needs:
       - terraform-lint-and-scan
+      - dependabot-terraform-lock-files-upgrade
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
