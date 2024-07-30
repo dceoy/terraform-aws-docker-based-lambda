@@ -1,5 +1,6 @@
 include "root" {
-  path = find_in_parent_folders()
+  path   = find_in_parent_folders()
+  expose = true
 }
 
 dependency "kms" {
@@ -28,7 +29,7 @@ dependency "docker" {
 
 inputs = {
   lambda_image_uri  = dependency.docker.outputs.docker_registry_primary_image_uri
-  kms_key_arn       = dependency.kms.outputs.kms_key_arn
+  kms_key_arn       = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
   s3_iam_policy_arn = dependency.s3.outputs.s3_iam_policy_arn
 }
 
