@@ -121,13 +121,9 @@ resource "aws_iam_policy" "logs" {
       (
         var.kms_key_arn != null ? [
           {
-            Sid    = "AllowKMSAccess"
-            Effect = "Allow"
-            Action = [
-              "kms:Encrypt",
-              "kms:Decrypt",
-              "kms:GenerateDataKey"
-            ]
+            Sid      = "AllowKMSAccess"
+            Effect   = "Allow"
+            Action   = ["kms:GenerateDataKey"]
             Resource = [var.kms_key_arn]
           }
         ] : []

@@ -70,6 +70,7 @@ inputs = {
   ecr_lifecycle_policy_image_count            = 1
   create_kms_key                              = true
   kms_key_deletion_window_in_days             = 30
+  kms_key_rotation_period_in_days             = 365
   s3_force_destroy                            = true
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
