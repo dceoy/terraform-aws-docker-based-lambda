@@ -1,6 +1,6 @@
-output "s3_base_s3_bucket_id" {
-  description = "S3 base S3 bucket ID"
-  value       = aws_s3_bucket.base.id
+output "s3_io_s3_bucket_id" {
+  description = "S3 IO S3 bucket ID"
+  value       = aws_s3_bucket.io.id
 }
 
 output "s3_log_s3_bucket_id" {
