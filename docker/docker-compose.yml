@@ -1,5 +1,4 @@
 ---
-version: '3'
 services:
   lambda-hello-world:
     container_name: lambda-hello-world

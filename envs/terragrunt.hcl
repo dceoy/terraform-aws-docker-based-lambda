@@ -73,6 +73,7 @@ inputs = {
   s3_force_destroy                            = true
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
+  s3_expired_object_delete_marker             = true
   enable_s3_server_access_logging             = true
   docker_image_force_remove                   = true
   docker_image_keep_locally                   = false

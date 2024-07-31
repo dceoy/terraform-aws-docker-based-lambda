@@ -37,6 +37,13 @@ Installation
     $ terragrunt run-all apply --terragrunt-working-dir='envs/dev/' --terragrunt-non-interactive
     ```
 
+Usage
+-----
+
+```sh
+$ aws lambda invoke --function-name dbl-dev-lambda-function /dev/stdout
+```
+
 Cleanup
 -------
 
