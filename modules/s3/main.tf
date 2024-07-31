@@ -165,7 +165,7 @@ resource "aws_iam_policy" "s3" {
     Statement = concat(
       [
         {
-          Sid    = "AllowS3BucketAccess"
+          Sid    = "AllowS3GetAndListActions"
           Effect = "Allow"
           Action = [
             "s3:Describe*",
@@ -178,6 +178,12 @@ resource "aws_iam_policy" "s3" {
             aws_s3_bucket.io.arn,
             "${aws_s3_bucket.io.arn}/*"
           ]
+        },
+        {
+          Sid      = "AllowS3PutObjectActions"
+          Effect   = "Allow"
+          Action   = ["s3:PutObject*"]
+          Resource = ["${aws_s3_bucket.io.arn}/*"]
         }
       ],
       (

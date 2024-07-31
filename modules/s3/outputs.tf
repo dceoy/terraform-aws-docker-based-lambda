@@ -1,10 +1,10 @@
-output "s3_io_s3_bucket_id" {
-  description = "S3 IO S3 bucket ID"
+output "io_s3_bucket_id" {
+  description = "IO S3 bucket ID"
   value       = aws_s3_bucket.io.id
 }
 
-output "s3_log_s3_bucket_id" {
-  description = "S3 log S3 bucket ID"
+output "log_s3_bucket_id" {
+  description = "Log S3 bucket ID"
   value       = length(aws_s3_bucket.log) > 0 ? aws_s3_bucket.log[0].id : null
 }
 
