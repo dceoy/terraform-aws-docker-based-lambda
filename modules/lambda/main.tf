@@ -83,7 +83,6 @@ resource "aws_iam_role" "function" {
   managed_policy_arns = compact([
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess",
-    aws_iam_policy.logs.arn,
     var.s3_iam_policy_arn
   ])
   tags = {
@@ -93,10 +92,9 @@ resource "aws_iam_role" "function" {
   }
 }
 
-resource "aws_iam_policy" "logs" {
-  name        = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
-  description = "CloudWatch logs policy"
-  path        = "/"
+resource "aws_iam_role_policy" "logs" {
+  name = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
+  role = aws_iam_role.function.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = concat(
@@ -130,9 +128,4 @@ resource "aws_iam_policy" "logs" {
       )
     )
   })
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-cloudwatch-logs-policy"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
 }
