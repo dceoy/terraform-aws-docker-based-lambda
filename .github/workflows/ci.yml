@@ -49,12 +49,7 @@ jobs:
       ) || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
     uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lock-files-upgrade.yml@main
     with:
-      terraform-working-directory-to-version-tf-json: >
-        {"envs/dev/docker": "modules/docker/version.tf",
-         "envs/dev/ecr": "modules/ecr/version.tf",
-         "envs/dev/kms": "modules/kms/version.tf",
-         "envs/dev/lambda": "modules/lambda/version.tf",
-         "envs/dev/s3": "modules/s3/version.tf"}
+      terragrunt-working-directories: envs/dev
       terraform-version: latest
   dependabot-auto-merge:
     if: >
