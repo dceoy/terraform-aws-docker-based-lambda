@@ -41,10 +41,12 @@ jobs:
       search-path: .
       terraform-version: latest
       terragrunt-version: latest
-  dependabot-terraform-lock-files-upgrade:
+  terraform-lock-files-upgrade:
     if: >
-      (github.event_name == 'pull_request' && startswith(github.head_ref, 'dependabot/terraform/'))
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
+      (
+        github.event_name == 'pull_request'
+        && (startswith(github.head_ref, 'dependabot/terraform/') || startswith(github.head_ref, 'renovate/'))
+      ) || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'upgrade')
     uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-lock-files-upgrade.yml@main
     with:
       terraform-working-directory-to-version-tf-json: >
@@ -59,5 +61,5 @@ jobs:
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
     needs:
       - terraform-lint-and-scan
-      - dependabot-terraform-lock-files-upgrade
+      - terraform-lock-files-upgrade
     uses: dceoy/gh-actions-for-devops/.github/workflows/dependabot-auto-merge.yml@main
