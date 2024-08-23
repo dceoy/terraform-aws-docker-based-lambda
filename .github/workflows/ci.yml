@@ -51,6 +51,8 @@ jobs:
     with:
       terragrunt-working-directories: envs/dev
       terraform-version: latest
+      pr-branch-prefix-to-merge: >
+        ${{ startswith(github.head_ref, 'dependabot/terraform/') && 'dependabot/terraform/' || 'renovate/' }}
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
