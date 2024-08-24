@@ -1,5 +1,5 @@
 ---
-name: CI workflows
+name: CI/CD
 on:
   push:
     branches:
@@ -14,7 +14,6 @@ on:
         type: choice
         options:
           - lint-and-scan
-          - format
           - upgrade
         description: Choose the workflow to run
         default: lint-and-scan
@@ -32,15 +31,6 @@ jobs:
       search-path: .
       terraform-version: latest
       terragrunt-version: latest
-  terraform-format:
-    if: >
-      github.event_name == 'pull_request'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'format')
-    uses: dceoy/gh-actions-for-devops/.github/workflows/terraform-format-and-pr.yml@main
-    with:
-      search-path: .
-      terraform-version: latest
-      terragrunt-version: latest
   terraform-lock-files-upgrade:
     if: >
       (
@@ -51,8 +41,6 @@ jobs:
     with:
       terragrunt-working-directories: envs/dev
       terraform-version: latest
-      pr-branch-prefix-to-merge: >
-        ${{ startswith(github.head_ref, 'dependabot/terraform/') && 'dependabot/terraform/' || 'renovate/' }}
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
