@@ -28,9 +28,10 @@ dependency "docker" {
 }
 
 inputs = {
-  lambda_image_uri  = dependency.docker.outputs.docker_registry_primary_image_uri
-  kms_key_arn       = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
-  s3_iam_policy_arn = dependency.s3.outputs.s3_iam_policy_arn
+  lambda_image_uri                           = dependency.docker.outputs.docker_registry_primary_image_uri
+  kms_key_arn                                = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
+  s3_iam_policy_arn                          = dependency.s3.outputs.s3_iam_policy_arn
+  lambda_client_iam_role_managed_policy_arns = dependency.s3.outputs.s3_iam_policy_arn != null ? [dependency.s3.outputs.s3_iam_policy_arn] : []
 }
 
 terraform {
