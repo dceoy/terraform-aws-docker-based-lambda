@@ -113,53 +113,56 @@ resource "aws_iam_role" "function" {
     "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess",
     var.s3_iam_policy_arn
   ])
-  inline_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = concat(
-      [
-        {
-          Sid      = "AllowDescribeLogGroups"
-          Effect   = "Allow"
-          Action   = ["logs:DescribeLogGroups"]
-          Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
-        },
-        {
-          Sid    = "AllowLogStreamAccess"
-          Effect = "Allow"
-          Action = [
-            "logs:CreateLogStream",
-            "logs:PutLogEvents",
-            "logs:DescribeLogStreams"
-          ]
-          Resource = ["${aws_cloudwatch_log_group.function.arn}:*"]
-        }
-      ],
-      (
-        var.enable_asynchronous_invocations ? [
+  inline_policy {
+    name = "${var.system_name}-${var.env_type}-lambda-execution-iam-role-policy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = concat(
+        [
           {
-            Sid    = "AllowSQSAccess"
-            Effect = "Allow"
-            Action = ["sqs:SendMessage"]
-            Resource = [
-              aws_sqs_queue.lambda_dead_letter[0].arn,
-              aws_sqs_queue.lambda_on_success[0].arn,
-              aws_sqs_queue.lambda_on_failure[0].arn
-            ]
-          }
-        ] : []
-      ),
-      (
-        var.kms_key_arn != null ? [
-          {
-            Sid      = "AllowKMSAccess"
+            Sid      = "AllowDescribeLogGroups"
             Effect   = "Allow"
-            Action   = ["kms:GenerateDataKey"]
-            Resource = [var.kms_key_arn]
+            Action   = ["logs:DescribeLogGroups"]
+            Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
+          },
+          {
+            Sid    = "AllowLogStreamAccess"
+            Effect = "Allow"
+            Action = [
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ]
+            Resource = ["${aws_cloudwatch_log_group.function.arn}:*"]
           }
-        ] : []
+        ],
+        (
+          var.enable_asynchronous_invocations ? [
+            {
+              Sid    = "AllowSQSAccess"
+              Effect = "Allow"
+              Action = ["sqs:SendMessage"]
+              Resource = [
+                aws_sqs_queue.lambda_dead_letter[0].arn,
+                aws_sqs_queue.lambda_on_success[0].arn,
+                aws_sqs_queue.lambda_on_failure[0].arn
+              ]
+            }
+          ] : []
+        ),
+        (
+          var.kms_key_arn != null ? [
+            {
+              Sid      = "AllowKMSAccess"
+              Effect   = "Allow"
+              Action   = ["kms:GenerateDataKey"]
+              Resource = [var.kms_key_arn]
+            }
+          ] : []
+        )
       )
-    )
-  })
+    })
+  }
   tags = {
     Name    = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
     System  = var.system_name
@@ -176,9 +179,9 @@ resource "aws_sqs_queue" "sqs_dead_letter" {
   delay_seconds                     = var.sqs_delay_seconds
   receive_wait_time_seconds         = var.sqs_receive_wait_time_seconds
   fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.fifo_queue ? var.sqs_fifo_throughput_limit : null
+  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
+  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
+  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
   sqs_managed_sse_enabled           = var.kms_key_arn == null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
@@ -202,9 +205,9 @@ resource "aws_sqs_queue" "lambda_dead_letter" {
     maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
   })
   fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.fifo_queue ? var.sqs_fifo_throughput_limit : null
+  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
+  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
+  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
   sqs_managed_sse_enabled           = var.kms_key_arn == null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
@@ -228,9 +231,9 @@ resource "aws_sqs_queue" "lambda_on_success" {
     maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
   })
   fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.fifo_queue ? var.sqs_fifo_throughput_limit : null
+  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
+  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
+  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
   sqs_managed_sse_enabled           = var.kms_key_arn == null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
@@ -254,9 +257,9 @@ resource "aws_sqs_queue" "lambda_on_failure" {
     maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
   })
   fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.fifo_queue ? var.sqs_fifo_throughput_limit : null
+  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
+  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
+  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
   sqs_managed_sse_enabled           = var.kms_key_arn == null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
@@ -288,94 +291,101 @@ resource "aws_iam_role" "client" {
     ]
   })
   managed_policy_arns = var.lambda_client_iam_role_managed_policy_arns
-  inline_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = concat(
-      [
-        {
-          Sid    = "AllowLambdaInvokeFunction"
-          Effect = "Allow"
-          Action = [
-            "lambda:Get*",
-            "lambda:List*",
-            "lambda:InvokeFunction"
-          ]
-          Resource = ["arn:aws:lambda:${local.region}:${local.account_id}:function:*"]
-          Condition = {
-            StringEquals = {
-              "aws:ResourceTag/SystemName" = var.system_name
-              "aws:ResourceTag/EnvType"    = var.env_type
-            }
-          }
-        },
-        {
-          Sid    = "AllowCloudWatchLogsReadOnlyAccess"
-          Effect = "Allow"
-          Action = [
-            "logs:DescribeLogGroups",
-            "logs:DescribeLogStreams",
-            "logs:GetLogEvents",
-            "logs:FilterLogEvents",
-            "logs:StartQuery",
-            "logs:StopQuery",
-            "logs:DescribeQueries",
-            "logs:GetLogGroupFields",
-            "logs:GetLogRecord",
-            "logs:GetQueryResults"
-          ]
-          Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
-          Condition = {
-            StringEquals = {
-              "aws:ResourceTag/SystemName" = var.system_name
-              "aws:ResourceTag/EnvType"    = var.env_type
-            }
-          }
-        },
-      ],
-      (
-        var.enable_asynchronous_invocations ? [
+  inline_policy {
+    name = "${var.system_name}-${var.env_type}-lambda-client-iam-role-policy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = concat(
+        [
           {
-            Sid    = "AllowSQSReadOnlyAccess"
+            Sid    = "AllowLambdaInvokeFunction"
             Effect = "Allow"
             Action = [
-              "sqs:GetQueueAttributes",
-              "sqs:GetQueueUrl",
-              "sqs:ListDeadLetterSourceQueues",
-              "sqs:ListQueues",
-              "sqs:ListMessageMoveTasks",
-              "sqs:ListQueueTags"
+              "lambda:Get*",
+              "lambda:List*",
+              "lambda:InvokeFunction"
             ]
-            Resource = ["arn:aws:sqs:${local.region}:${local.account_id}:*"]
-          },
-          {
-            Sid    = "AllowSQSReadWriteAccess"
-            Effect = "Allow"
-            Action = [
-              "sqs:ReceiveMessage",
-              "sqs:DeleteMessage"
-            ]
-            Resource = ["arn:aws:sqs:${local.region}:${local.account_id}:*"]
+            Resource = ["arn:aws:lambda:${local.region}:${local.account_id}:function:*"]
             Condition = {
               StringEquals = {
                 "aws:ResourceTag/SystemName" = var.system_name
                 "aws:ResourceTag/EnvType"    = var.env_type
               }
             }
-          }
-        ] : []
-      ),
-      (
-        var.kms_key_arn != null ? [
+          },
           {
-            Sid      = "AllowKMSDecrypt"
-            Effect   = "Allow"
-            Action   = ["kms:Decrypt"]
-            Resource = [var.kms_key_arn]
-          }
-        ] : []
+            Sid    = "AllowCloudWatchLogsReadOnlyAccess"
+            Effect = "Allow"
+            Action = [
+              "logs:DescribeLogGroups",
+              "logs:DescribeLogStreams",
+              "logs:GetLogEvents",
+              "logs:FilterLogEvents",
+              "logs:StartQuery",
+              "logs:StopQuery",
+              "logs:DescribeQueries",
+              "logs:GetLogGroupFields",
+              "logs:GetLogRecord",
+              "logs:GetQueryResults"
+            ]
+            Resource = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
+            Condition = {
+              StringEquals = {
+                "aws:ResourceTag/SystemName" = var.system_name
+                "aws:ResourceTag/EnvType"    = var.env_type
+              }
+            }
+          },
+        ],
+        (
+          var.enable_asynchronous_invocations ? [
+            {
+              Sid    = "AllowSQSReadOnlyAccess"
+              Effect = "Allow"
+              Action = [
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:ListDeadLetterSourceQueues",
+                "sqs:ListQueues",
+                "sqs:ListMessageMoveTasks",
+                "sqs:ListQueueTags"
+              ]
+              Resource = ["arn:aws:sqs:${local.region}:${local.account_id}:*"]
+            }
+          ] : []
+        ),
+        (
+          var.enable_asynchronous_invocations ? [
+            {
+              Sid    = "AllowSQSReadWriteAccess"
+              Effect = "Allow"
+              Action = [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage"
+              ]
+              Resource = ["arn:aws:sqs:${local.region}:${local.account_id}:*"]
+              Condition = {
+                StringEquals = {
+                  "aws:ResourceTag/SystemName" = var.system_name
+                  "aws:ResourceTag/EnvType"    = var.env_type
+                }
+              }
+            }
+          ] : []
+        ),
+        (
+          var.kms_key_arn != null ? [
+            {
+              Sid      = "AllowKMSDecrypt"
+              Effect   = "Allow"
+              Action   = ["kms:Decrypt"]
+              Resource = [var.kms_key_arn]
+            }
+          ] : []
+        )
       )
-    )
-  })
+    })
+  }
   tags = {
     Name    = "${var.system_name}-${var.env_type}-lambda-client-iam-role"
     System  = var.system_name

@@ -55,7 +55,7 @@ variable "lambda_client_iam_role_max_session_duration" {
   type        = number
   default     = 3600
   validation {
-    condition     = var.iam_role_max_session_duration >= 3600 && var.iam_role_max_session_duration <= 43200
+    condition     = var.lambda_client_iam_role_max_session_duration >= 3600 && var.lambda_client_iam_role_max_session_duration <= 43200
     error_message = "IAM role maximum session duration must be between 3600 and 43200"
   }
 }
@@ -306,12 +306,12 @@ variable "sqs_deduplication_scope" {
   }
 }
 
-variable "fifo_throughput_limit" {
+variable "sqs_fifo_throughput_limit" {
   description = "FIFO queue throughput limit"
   type        = string
   default     = "perMessageGroupId"
   validation {
-    condition     = var.fifo_throughput_limit == "perQueue" || var.fifo_throughput_limit == "perMessageGroupId"
+    condition     = var.sqs_fifo_throughput_limit == "perQueue" || var.sqs_fifo_throughput_limit == "perMessageGroupId"
     error_message = "FIFO queue throughput limit must be either perQueue or perMessageGroupId"
   }
 }
