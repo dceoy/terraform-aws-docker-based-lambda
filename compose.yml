@@ -3,7 +3,7 @@ services:
   lambda-hello-world:
     container_name: lambda-hello-world
     build:
-      context: .
+      context: ./docker
       dockerfile: Dockerfile
       x-bake:
         provenance: false
@@ -12,6 +12,7 @@ services:
           # - linux/amd64
     image: lambda-hello-world:latest
     platform: linux/arm64
+    network_mode: none
     entrypoint:
       - /var/lang/bin/python
       - -m
