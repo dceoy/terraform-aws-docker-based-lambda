@@ -47,7 +47,7 @@ def sqs_client() -> Any:
 
 @pytest.fixture(scope="function")
 def sqs_queue_urls() -> Dict[str, str]:
-    account_id = boto3.client('sts').get_caller_identity()['Account']
+    account_id = boto3.client("sts").get_caller_identity()["Account"]
     region = boto3.session.Session().region_name
     url_prefix = f"https://sqs.{region}.amazonaws.com/{account_id}/"
     return {
@@ -75,8 +75,8 @@ def test_lambda_asynchronous_invocation(
     lambda_client: Any,
     sqs_client: Any,
     sqs_queue_urls: Dict[str, str],
-    max_attempts: int = 10,
-    delay: int = 1,
+    polling_interval: int = 1,
+    polling_timeout: int = 900,
 ) -> None:
     input_event = {"job_id": str(uuid.uuid4())}
     response = lambda_client.invoke(
@@ -87,26 +87,27 @@ def test_lambda_asynchronous_invocation(
     assert response["StatusCode"] == 202
     assert response["ResponseMetadata"]["HTTPStatusCode"] == 202
     assert response["Payload"].read() == b""
-    execution_id = response['ResponseMetadata']['RequestId']
-    result: Dict[str, Any] = {}
-    for _ in range(max_attempts):
-        if not result:
-            time.sleep(delay)
-            for q, u in sqs_queue_urls.items():
-                messages = sqs_client.receive_message(
-                    QueueUrl=u,
-                    MaxNumberOfMessages=1,
-                    WaitTimeSeconds=1
-                ).get('Messages', [])
-                for m in messages:
-                    body = json.loads(m['Body'])
-                    if body['requestContext']['requestId'] == execution_id:
-                        result[q] = body
-                        sqs_client.delete_message(
-                            QueueUrl=u, ReceiptHandle=m['ReceiptHandle']
-                        )
-    assert "dead_letter" not in result
-    assert "on_failure" not in result
-    assert result.get("on_success")
-    assert result["on_success"].get("message")
-    assert result["on_success"].get("event") == input_event
+    execution_id = response["ResponseMetadata"]["RequestId"]
+    message_bodies: Dict[str, Any] = {}
+    deadline_time = time.time() + polling_timeout
+    while time.time() < deadline_time:
+        for q, u in sqs_queue_urls.items():
+            r = sqs_client.receive_message(
+                QueueUrl=u, MaxNumberOfMessages=1, WaitTimeSeconds=1
+            )
+            for m in r.get("Messages", []):
+                b = json.loads(m["Body"])
+                if b["requestContext"]["requestId"] == execution_id:
+                    message_bodies[q] = b
+                    sqs_client.delete_message(
+                        QueueUrl=u, ReceiptHandle=m["ReceiptHandle"]
+                    )
+        if message_bodies:
+            break
+        else:
+            time.sleep(polling_interval)
+    assert "dead_letter" not in message_bodies
+    assert "on_failure" not in message_bodies
+    assert message_bodies.get("on_success")
+    assert message_bodies["on_success"].get("message")
+    assert message_bodies["on_success"].get("event") == input_event
