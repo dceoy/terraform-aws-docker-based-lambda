@@ -55,6 +55,23 @@ resource "aws_kms_key" "custom" {
             "kms:ViaService" = "s3.*.amazonaws.com"
           }
         }
+      },
+      {
+        Sid    = "AllowLambdaServiceToEncrypt"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = "*"
+        Condition = {
+          ArnLike = {
+            "kms:EncryptionContext:aws:lambda:arn" = "arn:aws:lambda:${local.region}:${local.account_id}:function:*"
+          }
+        }
       }
     ]
   })
