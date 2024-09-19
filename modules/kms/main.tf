@@ -37,22 +37,6 @@ resource "aws_kms_key" "custom" {
         }
       },
       {
-        Sid    = "AllowLambdaServiceToEncrypt"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Action = [
-          "kms:GenerateDataKey"
-        ]
-        Resource = "*"
-        Condition = {
-          ArnLike = {
-            "kms:EncryptionContext:aws:lambda:arn" = "arn:aws:lambda:${local.region}:${local.account_id}:function:*"
-          }
-        }
-      },
-      {
         Sid    = "AllowS3ToEncrypt"
         Effect = "Allow"
         Principal = {

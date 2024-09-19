@@ -10,9 +10,7 @@ import boto3
 import pytest
 from botocore.config import Config
 
-_LAMBDA_FUNCTION_NAME = os.environ.get(
-    "LAMBDA_FUNCTION_NAME", "lambda-hello-world"
-)
+_LAMBDA_FUNCTION_NAME = os.environ.get("LAMBDA_FUNCTION_NAME", "lambda-hello-world")
 _LAMBDA_DEAD_LETTER_QUEUE_NAME = os.environ.get(
     "LAMBDA_DEAD_LETTER_QUEUE_NAME", "dbl-dev-lambda-dead-letter-sqs-queue"
 )

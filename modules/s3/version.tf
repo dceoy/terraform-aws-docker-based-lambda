@@ -1,1 +1,1 @@
-../ecr/version.tf
+../kms/version.tf

@@ -52,8 +52,8 @@ EOF
 
 catalog {
   urls = [
-    "${local.repo_root}/modules/ecr",
     "${local.repo_root}/modules/kms",
+    "${local.repo_root}/modules/ecr",
     "${local.repo_root}/modules/s3",
     "${local.repo_root}/modules/docker",
     "${local.repo_root}/modules/lambda"
@@ -63,14 +63,14 @@ catalog {
 inputs = {
   system_name                                 = local.env_vars.locals.system_name
   env_type                                    = local.env_vars.locals.env_type
+  create_kms_key                              = true
+  kms_key_deletion_window_in_days             = 30
+  kms_key_rotation_period_in_days             = 365
   ecr_repository_name                         = local.image_name
   ecr_image_secondary_tags                    = compact(split(",", get_env("DOCKER_METADATA_OUTPUT_TAGS", "latest")))
   ecr_image_tag_mutability                    = "MUTABLE"
   ecr_force_delete                            = true
   ecr_lifecycle_policy_image_count            = 1
-  create_kms_key                              = true
-  kms_key_deletion_window_in_days             = 30
-  kms_key_rotation_period_in_days             = 365
   s3_force_destroy                            = true
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
