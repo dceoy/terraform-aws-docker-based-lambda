@@ -41,7 +41,7 @@ Usage
 -----
 
 ```sh
-$ aws lambda invoke --function-name dbl-dev-lambda-function /dev/stdout
+$ aws lambda invoke --function-name lambda-hello-world /dev/stdout
 ```
 
 Cleanup
