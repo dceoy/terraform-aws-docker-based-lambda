@@ -1,7 +1,7 @@
 variable "system_name" {
   description = "System name"
   type        = string
-  default     = "dbl"
+  default     = "slc"
 }
 
 variable "env_type" {

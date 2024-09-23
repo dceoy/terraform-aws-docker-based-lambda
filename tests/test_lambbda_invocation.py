@@ -4,7 +4,7 @@ import json
 import os
 import time
 import uuid
-from typing import Any, Dict
+from typing import Any
 
 import boto3
 import pytest
@@ -44,7 +44,7 @@ def sqs_client() -> Any:
 
 
 @pytest.fixture(scope="function")
-def sqs_queue_urls() -> Dict[str, str]:
+def sqs_queue_urls() -> dict[str, str]:
     account_id = boto3.client("sts").get_caller_identity()["Account"]
     region = boto3.session.Session().region_name
     url_prefix = f"https://sqs.{region}.amazonaws.com/{account_id}/"
@@ -72,7 +72,7 @@ def test_lambda_synchronous_invocation(lambda_client: Any) -> None:
 def test_lambda_asynchronous_invocation(
     lambda_client: Any,
     sqs_client: Any,
-    sqs_queue_urls: Dict[str, str],
+    sqs_queue_urls: dict[str, str],
     polling_interval: int = 1,
     polling_timeout: int = 900,
 ) -> None:
@@ -86,7 +86,7 @@ def test_lambda_asynchronous_invocation(
     assert response["ResponseMetadata"]["HTTPStatusCode"] == 202
     assert response["Payload"].read() == b""
     execution_id = response["ResponseMetadata"]["RequestId"]
-    message_bodies: Dict[str, Any] = {}
+    message_bodies: dict[str, Any] = {}
     deadline_time = time.time() + polling_timeout
     while time.time() < deadline_time:
         for q, u in sqs_queue_urls.items():
