@@ -2,7 +2,9 @@
 ARG PYTHON_VERSION=3.12
 FROM public.ecr.aws/docker/library/python:${PYTHON_VERSION}-slim AS base
 
-SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+ARG USER_UID=1001
+ARG USER_GID=1001
+ARG USER_NAME=batch
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -10,6 +12,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONIOENCODING=UTF-8
 ENV PIP_NO_CACHE_DIR=off
 ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+RUN \
+      groupadd --gid "${USER_GID}" "${USER_NAME}" \
+      && useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /bin/bash --create-home "${USER_NAME}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -37,6 +45,8 @@ RUN \
       && cp -a /mnt/host/app.py "${PYTHONPATH}/app.py"
 
 HEALTHCHECK NONE
+
+USER "${USER_NAME}"
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]
