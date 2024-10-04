@@ -52,9 +52,9 @@ EOF
 
 catalog {
   urls = [
+    "github.com/dceoy/terraform-aws-vpc-for-slc",
     "${local.repo_root}/modules/kms",
     "${local.repo_root}/modules/ecr",
-    "${local.repo_root}/modules/s3",
     "${local.repo_root}/modules/docker",
     "${local.repo_root}/modules/lambda"
   ]
@@ -71,6 +71,9 @@ inputs = {
   ecr_image_tag_mutability                    = "MUTABLE"
   ecr_force_delete                            = true
   ecr_lifecycle_policy_image_count            = 1
+  create_io_s3_bucket                         = true
+  create_awslogs_s3_bucket                    = true
+  create_s3logs_s3_bucket                     = true
   s3_force_destroy                            = true
   s3_noncurrent_version_expiration_days       = 7
   s3_abort_incomplete_multipart_upload_days   = 7
