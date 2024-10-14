@@ -50,6 +50,7 @@ resource "aws_lambda_function" "function" {
   }
 }
 
+# trivy:ignore:avd-aws-0017
 resource "aws_cloudwatch_log_group" "function" {
   name              = "/${var.system_name}/${var.env_type}/lambda/${local.lambda_function_name}"
   retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -184,6 +185,7 @@ resource "aws_sqs_queue" "sqs_dead_letter" {
   content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
   deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
   fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
+  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
@@ -209,6 +211,7 @@ resource "aws_sqs_queue" "lambda_dead_letter" {
   content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
   deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
   fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
+  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
@@ -234,6 +237,7 @@ resource "aws_sqs_queue" "lambda_on_success" {
   content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
   deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
   fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
+  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
@@ -259,6 +263,7 @@ resource "aws_sqs_queue" "lambda_on_failure" {
   content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
   deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
   fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
+  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {

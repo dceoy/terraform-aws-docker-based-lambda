@@ -22,13 +22,13 @@ _LAMBDA_ON_FAILURE_QUEUE_NAME = os.environ.get(
 )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def lambda_client(
     connect_timeout: int = 60,
     read_timeout: int = 60,
     total_max_attempts: int = 1,
 ) -> Any:
-    yield boto3.client(
+    return boto3.client(
         "lambda",
         config=Config(
             connect_timeout=connect_timeout,
@@ -38,12 +38,12 @@ def lambda_client(
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def sqs_client() -> Any:
-    yield boto3.client("sqs")
+    return boto3.client("sqs")
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def sqs_queue_urls() -> dict[str, str]:
     account_id = boto3.client("sts").get_caller_identity()["Account"]
     region = boto3.session.Session().region_name
