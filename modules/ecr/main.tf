@@ -1,5 +1,5 @@
-# trivy:ignore:AVD-AWS-0031
-# trivy:ignore:AVD-AWS-0033
+# trivy:ignore:avd-aws-0031
+# trivy:ignore:avd-aws-0033
 resource "aws_ecr_repository" "container" {
   name                 = local.ecr_repository_name
   image_tag_mutability = var.ecr_image_tag_mutability
