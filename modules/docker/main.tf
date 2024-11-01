@@ -24,7 +24,7 @@ resource "docker_tag" "secondary" {
 }
 
 resource "docker_registry_image" "primary" {
-  depends_on = [docker_image.primary, docker_tag.secondary]
+  depends_on    = [docker_image.primary, docker_tag.secondary]
   name          = docker_image.primary.name
   keep_remotely = true
   triggers = {
