@@ -7,8 +7,8 @@ resource "aws_kinesis_firehose_delivery_stream" "logs" {
     bucket_arn          = "arn:aws:s3:::${var.destination_s3_bucket_id}"
     prefix              = "logs/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/output/"
     error_output_prefix = "logs/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/error/"
-    buffer_size         = var.firehose_extended_s3_configuration_buffer_size
-    buffer_interval     = var.firehose_extended_s3_configuration_buffer_interval
+    buffering_size      = var.firehose_extended_s3_configuration_buffering_size
+    buffering_interval  = var.firehose_extended_s3_configuration_buffering_interval
     compression_format  = var.firehose_extended_s3_configuration_compression_format
     custom_time_zone    = var.firehose_extended_s3_configuration_custom_time_zone
     kms_key_arn         = var.destination_s3_kms_key_arn

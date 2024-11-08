@@ -56,22 +56,22 @@ variable "destination_s3_kms_key_arn" {
   default     = null
 }
 
-variable "firehose_extended_s3_configuration_buffer_size" {
+variable "firehose_extended_s3_configuration_buffering_size" {
   description = "Stream buffer size in MB for Firehose extended S3 configuration"
   type        = number
   default     = 5
   validation {
-    condition     = var.firehose_stream_buffer_size >= 1 && var.firehose_stream_buffer_size <= 128
+    condition     = var.firehose_extended_s3_configuration_buffering_size >= 1 && var.firehose_extended_s3_configuration_buffering_size <= 128
     error_message = "Firehose stream buffer size must be between 1 and 128"
   }
 }
 
-variable "firehose_extended_s3_configuration_buffer_interval" {
+variable "firehose_extended_s3_configuration_buffering_interval" {
   description = "Stream buffer interval in seconds for Firehose extended S3 configuration"
   type        = number
   default     = 300
   validation {
-    condition     = var.firehose_stream_buffer_interval >= 0 && var.firehose_stream_buffer_interval <= 900
+    condition     = var.firehose_extended_s3_configuration_buffering_interval >= 0 && var.firehose_extended_s3_configuration_buffering_interval <= 900
     error_message = "Firehose stream buffer interval must be between 0 and 900"
   }
 }
@@ -81,7 +81,7 @@ variable "firehose_extended_s3_configuration_compression_format" {
   type        = string
   default     = "GZIP"
   validation {
-    condition     = var.firehose_stream_compression_format == "UNCOMPRESSED" || var.firehose_stream_compression_format == "GZIP" || var.firehose_stream_compression_format == "Snappy" || var.firehose_stream_compression_format == "HADOOP_SNAPPY"
+    condition     = var.firehose_extended_s3_configuration_compression_format == "UNCOMPRESSED" || var.firehose_extended_s3_configuration_compression_format == "GZIP" || var.firehose_extended_s3_configuration_compression_format == "Snappy" || var.firehose_extended_s3_configuration_compression_format == "HADOOP_SNAPPY"
     error_message = "Firehose stream compression format must be UNCOMPRESSED, GZIP, Snappy, or HADOOP_SNAPPY"
   }
 }
