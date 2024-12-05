@@ -28,8 +28,20 @@ variable "ecr_force_delete" {
   default     = true
 }
 
-variable "ecr_lifecycle_policy_image_count" {
-  description = "ECR lifecycle policy image count"
+variable "ecr_lifecycle_policy_semver_image_count" {
+  description = "Semantic versioning image count to keep by ECR lifecycle policy"
   type        = number
-  default     = 1
+  default     = 9999
+}
+
+variable "ecr_lifecycle_policy_any_image_count" {
+  description = "Any image count to keep by ECR lifecycle policy"
+  type        = number
+  default     = 10
+}
+
+variable "ecr_lifecycle_policy_untagged_image_days" {
+  description = "Untagged image days to keep by ECR lifecycle policy"
+  type        = number
+  default     = 7
 }
