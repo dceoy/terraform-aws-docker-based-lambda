@@ -25,10 +25,10 @@ resource "aws_ecr_lifecycle_policy" "container" {
         rulePriority = 1
         description  = "Keep images with sematic versioning"
         selection = {
-          tagStatus     = "tagged"
-          tagPrefixList = ["*.*.*", "v*.*.*"]
-          countType     = "imageCountMoreThan"
-          countNumber   = var.ecr_lifecycle_policy_semver_image_count
+          tagStatus      = "tagged"
+          tagPatternList = ["*.*.*", "v*.*.*"]
+          countType      = "imageCountMoreThan"
+          countNumber    = var.ecr_lifecycle_policy_semver_image_count
         }
         action = {
           type = "expire"
@@ -38,9 +38,10 @@ resource "aws_ecr_lifecycle_policy" "container" {
         rulePriority = 2
         description  = "Keep last images"
         selection = {
-          tagStatus   = "any"
-          countType   = "imageCountMoreThan"
-          countNumber = var.ecr_lifecycle_policy_any_image_count
+          tagStatus      = "tagged"
+          tagPatternList = ["*"]
+          countType      = "imageCountMoreThan"
+          countNumber    = var.ecr_lifecycle_policy_any_image_count
         }
         action = {
           type = "expire"
@@ -50,7 +51,7 @@ resource "aws_ecr_lifecycle_policy" "container" {
         rulePriority = 3
         description  = "Remove untagged images"
         selection = {
-          tagStatus   = "untagged"
+          tagStatus   = "any"
           countType   = "sinceImagePushed"
           countUnit   = "days"
           countNumber = var.ecr_lifecycle_policy_untagged_image_days

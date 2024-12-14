@@ -67,13 +67,7 @@ variable "docker_image_build_target" {
 variable "docker_image_primary_tag" {
   description = "Docker image primary tag"
   type        = string
-  default     = null
-}
-
-variable "docker_image_build_trigger_file_patterns" {
-  description = "Patterns to match files that will trigger a build"
-  type        = list(string)
-  default     = ["**"]
+  default     = "latest"
 }
 
 variable "docker_host" {

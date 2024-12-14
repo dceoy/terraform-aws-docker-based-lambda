@@ -37,16 +37,19 @@ RUN \
       /usr/local/bin/python -m pip install -U --no-cache-dir \
         awslambdaric pip
 
+HEALTHCHECK NONE
+
+
+FROM base AS app
+
+USER "${USER_NAME}"
+
 ENV PYTHONPATH=/var/task
 
 RUN \
       --mount=type=bind,source=.,target=/mnt/host \
       mkdir -p "${PYTHONPATH}" \
       && cp -a /mnt/host/app.py "${PYTHONPATH}/app.py"
-
-HEALTHCHECK NONE
-
-USER "${USER_NAME}"
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]

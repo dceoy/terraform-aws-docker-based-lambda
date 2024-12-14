@@ -78,12 +78,6 @@ variable "lambda_image_uri" {
   default     = null
 }
 
-variable "lambda_image_tag" {
-  description = "Lambda image tag"
-  type        = string
-  default     = null
-}
-
 variable "lambda_architectures" {
   description = "Lambda instruction set architectures"
   type        = list(string)
