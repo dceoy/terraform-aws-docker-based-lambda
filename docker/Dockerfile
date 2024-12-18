@@ -37,24 +37,29 @@ RUN \
       /usr/local/bin/python -m pip install -U --no-cache-dir \
         awslambdaric pip
 
-ENV PYTHONPATH=/var/task
-
-RUN \
-      mkdir -p "${PYTHONPATH}" \
-      && chown -R "${USER_NAME}:${USER_NAME}" "${PYTHONPATH}"
-
 HEALTHCHECK NONE
 
 
 FROM base AS app
 
+ENV LANG=en_US.UTF-8
+ENV TZ=:/etc/localtime
+ENV PATH=/var/lang/bin:/usr/local/bin:/usr/bin/:/bin:/opt/bin
+ENV LD_LIBRARY_PATH=/var/lang/lib:/lib64:/usr/lib64:/var/runtime:/var/runtime/lib:/var/task:/var/task/lib:/opt/lib
+ENV LAMBDA_TASK_ROOT=/var/task
+ENV LAMBDA_RUNTIME_DIR=/var/runtime
+
+RUN \
+      mkdir -p "${LAMBDA_TASK_ROOT}" \
+      && chown -R "${USER_NAME}:${USER_NAME}" "${LAMBDA_TASK_ROOT}"
+
 USER "${USER_NAME}"
 
 RUN \
       --mount=type=bind,source=.,target=/mnt/host \
-      cp -a /mnt/host/app.py "${PYTHONPATH}"
+      cp /mnt/host/app.py "${LAMBDA_TASK_ROOT}/"
 
-EXPOSE 8080
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]
