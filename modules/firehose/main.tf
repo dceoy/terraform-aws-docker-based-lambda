@@ -19,9 +19,9 @@ resource "aws_kinesis_firehose_delivery_stream" "logs" {
     }
   }
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-${each.key}-s3-firehose-stream"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-${each.key}-s3-firehose-stream"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -45,9 +45,9 @@ resource "aws_iam_role" "firehose" {
     ]
   })
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-s3-firehose-stream-iam-role"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-s3-firehose-stream-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -154,9 +154,9 @@ resource "aws_iam_role" "logs" {
     ]
   })
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-cloudwatch-log-subscription-filter-iam-role"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-cloudwatch-log-subscription-filter-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 

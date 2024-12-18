@@ -44,9 +44,9 @@ resource "aws_lambda_function" "function" {
     }
   }
   tags = {
-    Name    = local.lambda_function_name
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = local.lambda_function_name
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -110,14 +110,14 @@ resource "aws_iam_role" "function" {
     ]
   })
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
 resource "aws_iam_role_policy_attachments_exclusive" "function" {
-  role_name   = aws_iam_role.function.name
+  role_name = aws_iam_role.function.name
   policy_arns = compact([
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess",
@@ -193,9 +193,9 @@ resource "aws_sqs_queue" "sqs_dead_letter" {
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-sqs-dead-letter-sqs-queue"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-sqs-dead-letter-sqs-queue"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -219,9 +219,9 @@ resource "aws_sqs_queue" "lambda_dead_letter" {
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-lambda-dead-letter-sqs-queue"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-lambda-dead-letter-sqs-queue"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -245,9 +245,9 @@ resource "aws_sqs_queue" "lambda_on_success" {
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-lambda-on-success-sqs-queue"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-lambda-on-success-sqs-queue"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -271,9 +271,9 @@ resource "aws_sqs_queue" "lambda_on_failure" {
   kms_master_key_id                 = var.kms_key_arn
   kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-lambda-on-failure-sqs-queue"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-lambda-on-failure-sqs-queue"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 
@@ -298,9 +298,9 @@ resource "aws_iam_role" "client" {
     ]
   })
   tags = {
-    Name    = "${var.system_name}-${var.env_type}-lambda-client-iam-role"
-    System  = var.system_name
-    EnvType = var.env_type
+    Name       = "${var.system_name}-${var.env_type}-lambda-client-iam-role"
+    SystemName = var.system_name
+    EnvType    = var.env_type
   }
 }
 

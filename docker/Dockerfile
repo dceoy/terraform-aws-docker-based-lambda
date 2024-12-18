@@ -52,7 +52,9 @@ USER "${USER_NAME}"
 
 RUN \
       --mount=type=bind,source=.,target=/mnt/host \
-      cp -a /mnt/host/app.py "${PYTHONPATH}/app.py"
+      cp -a /mnt/host/app.py "${PYTHONPATH}"
+
+EXPOSE 8080
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]
