@@ -109,16 +109,20 @@ resource "aws_iam_role" "function" {
       }
     ]
   })
-  managed_policy_arns = compact([
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess",
-    var.s3_iam_policy_arn
-  ])
   tags = {
     Name    = "${var.system_name}-${var.env_type}-lambda-execution-iam-role"
     System  = var.system_name
     EnvType = var.env_type
   }
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "function" {
+  role_name   = aws_iam_role.function.name
+  policy_arns = compact([
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+    "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess",
+    var.s3_iam_policy_arn
+  ])
 }
 
 resource "aws_iam_role_policy" "function" {
@@ -293,12 +297,17 @@ resource "aws_iam_role" "client" {
       }
     ]
   })
-  managed_policy_arns = var.lambda_client_iam_role_managed_policy_arns
   tags = {
     Name    = "${var.system_name}-${var.env_type}-lambda-client-iam-role"
     System  = var.system_name
     EnvType = var.env_type
   }
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "client" {
+  count       = length(aws_iam_role.client) > 0 ? 1 : 0
+  role_name   = aws_iam_role.client[count.index].name
+  policy_arns = var.lambda_client_iam_role_managed_policy_arns
 }
 
 resource "aws_iam_role_policy" "client" {
