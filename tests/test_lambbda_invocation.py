@@ -46,7 +46,7 @@ def sqs_client() -> Any:
 @pytest.fixture
 def sqs_queue_urls() -> dict[str, str]:
     account_id = boto3.client("sts").get_caller_identity()["Account"]
-    region = boto3.session.Session().region_name
+    region = boto3.session.Session().region_name  #  pyright: ignore[reportAttributeAccessIssue]
     url_prefix = f"https://sqs.{region}.amazonaws.com/{account_id}/"
     return {
         "dead_letter": f"{url_prefix}{_LAMBDA_DEAD_LETTER_QUEUE_NAME}",

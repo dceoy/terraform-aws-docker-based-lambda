@@ -2,10 +2,10 @@
 
 import json
 import logging
-from typing import Any, Dict
+from typing import Any
 
 
-def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
+def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     logger = logging.getLogger(lambda_handler.__name__)
     logger.info(f"event: {event}")
     logger.info(f"context: {vars(context)}")
