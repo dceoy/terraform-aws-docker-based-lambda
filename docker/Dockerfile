@@ -37,6 +37,12 @@ RUN \
       /usr/local/bin/python -m pip install -U --no-cache-dir \
         awslambdaric pip
 
+ENV PYTHONPATH=/var/task
+
+RUN \
+      mkdir -p "${PYTHONPATH}" \
+      && chown -R "${USER_NAME}:${USER_NAME}" "${PYTHONPATH}"
+
 HEALTHCHECK NONE
 
 
@@ -44,12 +50,9 @@ FROM base AS app
 
 USER "${USER_NAME}"
 
-ENV PYTHONPATH=/var/task
-
 RUN \
       --mount=type=bind,source=.,target=/mnt/host \
-      mkdir -p "${PYTHONPATH}" \
-      && cp -a /mnt/host/app.py "${PYTHONPATH}/app.py"
+      cp -a /mnt/host/app.py "${PYTHONPATH}/app.py"
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
 CMD ["app.lambda_handler"]
