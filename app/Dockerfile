@@ -57,9 +57,9 @@ USER "${USER_NAME}"
 
 RUN \
       --mount=type=bind,source=.,target=/mnt/host \
-      cp /mnt/host/app.py "${LAMBDA_TASK_ROOT}/"
+      cp /mnt/host/main.py "${LAMBDA_TASK_ROOT}/"
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 
 ENTRYPOINT ["/usr/local/bin/python", "-m", "awslambdaric"]
-CMD ["app.lambda_handler"]
+CMD ["main.lambda_handler"]

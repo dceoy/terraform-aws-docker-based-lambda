@@ -3,8 +3,9 @@ services:
   lambda-hello-world:
     container_name: lambda-hello-world
     build:
-      context: ./docker
+      context: ./app
       dockerfile: Dockerfile
+      target: app
       x-bake:
         provenance: false
         platforms:
@@ -14,8 +15,8 @@ services:
     platform: linux/arm64
     network_mode: none
     entrypoint:
-      - /var/lang/bin/python
+      - /usr/local/bin/python
       - -m
       - awslambdaric
     command:
-      - app.lambda_handler
+      - main.lambda_handler

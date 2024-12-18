@@ -19,14 +19,10 @@ Installation
 
 3.  Install [Terraform](https://www.terraform.io/) and [Terragrunt](https://terragrunt.gruntwork.io/).
 
-4.  Build the Docker image. (Replace `${AWS_ACCOUNT_ID}` and `${AWS_REGION}` with your AWS account ID and region.)
+4.  Build the Docker image.
 
     ```sh
-    $ docker build \
-        -t "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/lambda-hello-world:sha-$(git rev-parse --short HEAD)" \
-        --target app \
-        --provenance false \
-        ./docker
+    $ ./build_docker_image.sh
     ```
 
 5.  Initialize Terraform working directories.
