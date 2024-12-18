@@ -22,6 +22,7 @@ dependency "s3" {
 dependency "lambda" {
   config_path = "../lambda"
   mock_outputs = {
+    lambda_function_arn                   = "arn:aws:lambda:us-east-1:123456789012:function:my-lambda"
     lambda_cloudwatch_logs_log_group_name = "/aws/lambda/my-lambda"
   }
   mock_outputs_merge_strategy_with_state = "shallow"
@@ -30,10 +31,10 @@ dependency "lambda" {
 inputs = {
   kms_key_arn = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
   source_cloudwatch_logs_log_group_names = {
-    my-lambda = "/aws/lambda/my-lambda"
+    "${include.root.inputs.lambda_function_name}" = dependency.lambda.outputs.lambda_cloudwatch_logs_log_group_name
   }
   source_cloudwatch_logs_kms_key_arns = {
-    my-lambda = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
+    "${include.root.inputs.lambda_function_name}" = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null
   }
   destination_s3_bucket_id   = dependency.s3.outputs.awslogs_s3_bucket_id
   destination_s3_kms_key_arn = include.root.inputs.create_kms_key ? dependency.kms.outputs.kms_key_arn : null

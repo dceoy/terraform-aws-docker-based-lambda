@@ -5,5 +5,5 @@ locals {
   terraform_dynamodb_table = "tfstate-lock"
   system_name              = "slc"
   env_type                 = "dev"
-  docker_image_build       = true
+  docker_image_build       = false
 }

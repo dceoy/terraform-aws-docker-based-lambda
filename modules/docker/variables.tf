@@ -31,7 +31,7 @@ variable "docker_image_force_remove" {
 variable "docker_image_build" {
   description = "Whether to build the Docker image"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "docker_image_build_context" {

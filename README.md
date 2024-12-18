@@ -19,19 +19,29 @@ Installation
 
 3.  Install [Terraform](https://www.terraform.io/) and [Terragrunt](https://terragrunt.gruntwork.io/).
 
-4.  Initialize Terraform working directories.
+4.  Build the Docker image. (Replace `${AWS_ACCOUNT_ID}` and `${AWS_REGION}` with your AWS account ID and region.)
+
+    ```sh
+    $ docker build \
+        -t "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/lambda-hello-world:sha-$(git rev-parse --short HEAD)" \
+        --target app \
+        --provenance false \
+        ./docker
+    ```
+
+5.  Initialize Terraform working directories.
 
     ```sh
     $ terragrunt run-all init --terragrunt-working-dir='envs/dev/' -upgrade -reconfigure
     ```
 
-5.  Generates a speculative execution plan. (Optional)
+6.  Generates a speculative execution plan. (Optional)
 
     ```sh
     $ terragrunt run-all plan --terragrunt-working-dir='envs/dev/'
     ```
 
-6.  Creates or updates infrastructure.
+7.  Creates or updates infrastructure.
 
     ```sh
     $ terragrunt run-all apply --terragrunt-working-dir='envs/dev/' --terragrunt-non-interactive

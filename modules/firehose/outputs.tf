@@ -13,11 +13,6 @@ output "firehose_cloudwatch_log_group_name" {
   value       = length(aws_cloudwatch_log_group.firehose) > 0 ? aws_cloudwatch_log_group.firehose[0].name : null
 }
 
-output "firehose_cloudwatch_log_stream_names" {
-  description = "Firehose CloudWatch Log Stream names"
-  value       = { for k, v in aws_cloudwatch_log_stream.firehose : k => v.name }
-}
-
 output "firehose_log_subscription_filter_names" {
   description = "Firehose CloudWatch Log Subscription Filter names"
   value       = { for k, v in aws_cloudwatch_log_subscription_filter.logs : k => v.name }

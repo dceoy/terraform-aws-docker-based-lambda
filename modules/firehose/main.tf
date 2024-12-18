@@ -5,8 +5,8 @@ resource "aws_kinesis_firehose_delivery_stream" "logs" {
   extended_s3_configuration {
     role_arn            = aws_iam_role.firehose[0].arn
     bucket_arn          = "arn:aws:s3:::${var.destination_s3_bucket_id}"
-    prefix              = "logs/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/output/"
-    error_output_prefix = "logs/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/error/"
+    prefix              = "logs/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/"
+    error_output_prefix = "failures/${trim(each.value, "/")}/!{timestamp:yyyy/MM/dd/HH}/!{firehose:error-output-type}/"
     buffering_size      = var.firehose_extended_s3_configuration_buffering_size
     buffering_interval  = var.firehose_extended_s3_configuration_buffering_interval
     compression_format  = var.firehose_extended_s3_configuration_compression_format
@@ -15,7 +15,7 @@ resource "aws_kinesis_firehose_delivery_stream" "logs" {
     cloudwatch_logging_options {
       enabled         = true
       log_group_name  = aws_cloudwatch_log_group.firehose[0].name
-      log_stream_name = aws_cloudwatch_log_stream.firehose[each.key].name
+      log_stream_name = each.key
     }
   }
   tags = {
@@ -76,15 +76,12 @@ resource "aws_iam_role_policy" "firehose" {
           ]
         },
         {
-          Sid      = "AllowKMSGenerateDataKey"
-          Effect   = "Allow"
-          Action   = ["kms:GenerateDataKey"]
-          Resource = [var.destination_s3_kms_key_arn]
-        },
-        {
-          Sid      = "AllowLogsPutLogEvents"
-          Effect   = "Allow"
-          Action   = ["logs:PutLogEvents"]
+          Sid    = "AllowLogsPutLogEvents"
+          Effect = "Allow"
+          Action = [
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ]
           Resource = ["${aws_cloudwatch_log_group.firehose[0].arn}:*"]
         }
       ],
@@ -116,12 +113,6 @@ resource "aws_cloudwatch_log_group" "firehose" {
     SystemName = var.system_name
     EnvType    = var.env_type
   }
-}
-
-resource "aws_cloudwatch_log_stream" "firehose" {
-  for_each       = local.source_cloudwatch_logs_log_group_names
-  name           = each.key
-  log_group_name = aws_cloudwatch_log_group.firehose[0].name
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "logs" {
