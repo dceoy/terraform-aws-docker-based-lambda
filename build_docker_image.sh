@@ -5,7 +5,7 @@
 
 set -euox pipefail
 
-APP_DIR="$(realpath "${0}" | xargs dirname)/app"
+SRC_DIR="$(realpath "${0}" | xargs dirname)/src"
 IMAGE_NAME="${1:-lambda-hello-world}"
 AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 AWS_REGION="$(aws configure get region)"
@@ -19,4 +19,4 @@ docker buildx build \
   --target "${BUILD_TARGET}" \
   --platform "${PLATFORMS}" \
   --provenance false \
-  "${APP_DIR}"
+  "${SRC_DIR}"
