@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 import json
-import logging
 from typing import Any
 
+from aws_lambda_powertools import Logger, Tracer
 
+logger = Logger()
+tracer = Tracer()
+
+
+@logger.inject_lambda_context(log_event=True)
+@tracer.capture_lambda_handler
 def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
-    logger = logging.getLogger(lambda_handler.__name__)
     logger.info(f"event: {event}")
     logger.info(f"context: {vars(context)}")
     body_dict = {

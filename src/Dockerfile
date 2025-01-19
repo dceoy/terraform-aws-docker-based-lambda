@@ -34,8 +34,9 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/root/.cache/pip \
-      /usr/local/bin/python -m pip install -U --no-cache-dir \
-        awslambdaric pip
+      --mount=type=bind,source=.,target=/mnt/host \
+      /usr/local/bin/python -m pip install -U awslambdaric pip \
+      && /usr/local/bin/python -m pip install -U -r /mnt/host/requirements.txt
 
 HEALTHCHECK NONE
 
