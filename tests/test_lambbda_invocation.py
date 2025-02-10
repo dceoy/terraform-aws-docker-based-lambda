@@ -46,7 +46,7 @@ def sqs_client() -> Any:
 @pytest.fixture
 def sqs_queue_urls() -> dict[str, str]:
     account_id = boto3.client("sts").get_caller_identity()["Account"]
-    region = boto3.session.Session().region_name  #  pyright: ignore[reportAttributeAccessIssue]
+    region = boto3.session.Session().region_name  # pyright: ignore[reportAttributeAccessIssue]
     url_prefix = f"https://sqs.{region}.amazonaws.com/{account_id}/"
     return {
         "dead_letter": f"{url_prefix}{_LAMBDA_DEAD_LETTER_QUEUE_NAME}",
@@ -62,8 +62,9 @@ def test_lambda_synchronous_invocation(lambda_client: Any) -> None:
         InvocationType="RequestResponse",
         Payload=json.dumps(input_event),
     )
-    assert response["StatusCode"] == 200
-    assert response["ResponseMetadata"]["HTTPStatusCode"] == 200
+    status_code = 200
+    assert response["StatusCode"] == status_code
+    assert response["ResponseMetadata"]["HTTPStatusCode"] == status_code
     response_payload = json.loads(response["Payload"].read().decode())
     assert response_payload.get("message")
     assert response_payload.get("event") == input_event
@@ -82,8 +83,9 @@ def test_lambda_asynchronous_invocation(
         InvocationType="Event",
         Payload=json.dumps(input_event),
     )
-    assert response["StatusCode"] == 202
-    assert response["ResponseMetadata"]["HTTPStatusCode"] == 202
+    status_code = 202
+    assert response["StatusCode"] == status_code
+    assert response["ResponseMetadata"]["HTTPStatusCode"] == status_code
     assert response["Payload"].read() == b""
     execution_id = response["ResponseMetadata"]["RequestId"]
     message_bodies: dict[str, Any] = {}

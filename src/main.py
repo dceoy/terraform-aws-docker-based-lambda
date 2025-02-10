@@ -12,8 +12,8 @@ tracer = Tracer()
 @logger.inject_lambda_context(log_event=True)
 @tracer.capture_lambda_handler
 def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
-    logger.info(f"event: {event}")
-    logger.info(f"context: {vars(context)}")
+    logger.info("event: %s", event)
+    logger.info("context: %s", vars(context))
     body_dict = {
         "message": "Hello World!",
         "event": event,
@@ -23,5 +23,5 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
         "context_aws_request_id": context.aws_request_id,
         "context_memory_limit_in_mb": context.memory_limit_in_mb,
     }
-    logger.info(f"body_dict: {body_dict}")
+    logger.info("body_dict: %s", body_dict)
     return {"statusCode": 200, "body": json.dumps(body_dict)}
