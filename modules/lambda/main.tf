@@ -126,7 +126,7 @@ resource "aws_iam_role_policy_attachments_exclusive" "function" {
 }
 
 resource "aws_iam_role_policy" "function" {
-  name = "${var.system_name}-${var.env_type}-lambda-execution-iam-role-policy"
+  name = "${var.system_name}-${var.env_type}-lambda-execution-logs-iam-policy"
   role = aws_iam_role.function.id
   policy = jsonencode({
     Version = "2012-10-17"
@@ -312,7 +312,7 @@ resource "aws_iam_role_policy_attachments_exclusive" "client" {
 
 resource "aws_iam_role_policy" "client" {
   count = length(aws_iam_role.client) > 0 ? 1 : 0
-  name  = "${var.system_name}-${var.env_type}-lambda-client-iam-role-policy"
+  name  = "${var.system_name}-${var.env_type}-lambda-client-iam-policy"
   role  = aws_iam_role.client[count.index].id
   policy = jsonencode({
     Version = "2012-10-17"

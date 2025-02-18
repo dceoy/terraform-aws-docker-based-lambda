@@ -53,7 +53,7 @@ resource "aws_iam_role" "firehose" {
 
 resource "aws_iam_role_policy" "firehose" {
   count = length(local.source_cloudwatch_logs_log_group_names) > 0 ? 1 : 0
-  name  = "${var.system_name}-${var.env_type}-s3-firehose-stream-iam-role-policy"
+  name  = "${var.system_name}-${var.env_type}-s3-firehose-stream-iam-policy"
   role  = aws_iam_role.firehose[0].name
   policy = jsonencode({
     Version = "2012-10-17"
@@ -153,7 +153,7 @@ resource "aws_iam_role" "logs" {
 
 resource "aws_iam_role_policy" "logs" {
   count = length(local.source_cloudwatch_logs_log_group_names) > 0 ? 1 : 0
-  name  = "${var.system_name}-${var.env_type}-cloudwatch-log-subscription-filter-iam-role-policy"
+  name  = "${var.system_name}-${var.env_type}-cloudwatch-log-subscription-filter-logs-iam-policy"
   role  = aws_iam_role.logs[0].name
   policy = jsonencode({
     Version = "2012-10-17"
