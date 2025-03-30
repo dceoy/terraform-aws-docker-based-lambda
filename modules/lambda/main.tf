@@ -37,6 +37,14 @@ resource "aws_lambda_function" "function" {
       variables = var.lambda_environment_variables
     }
   }
+  dynamic "vpc_config" {
+    for_each = length(var.lambda_vpc_config_subnet_ids) > 0 && length(var.lambda_vpc_config_security_group_ids) > 0 ? [true] : []
+    content {
+      subnet_ids                  = var.lambda_vpc_config_subnet_ids
+      security_group_ids          = var.lambda_vpc_config_security_group_ids
+      ipv6_allowed_for_dual_stack = var.lambda_vpc_config_ipv6_allowed_for_dual_stack
+    }
+  }
   dynamic "dead_letter_config" {
     for_each = length(aws_sqs_queue.lambda_dead_letter) > 0 ? [true] : []
     content {
