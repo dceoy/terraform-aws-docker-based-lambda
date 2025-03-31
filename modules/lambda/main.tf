@@ -46,9 +46,9 @@ resource "aws_lambda_function" "function" {
     }
   }
   dynamic "dead_letter_config" {
-    for_each = length(aws_sqs_queue.lambda_dead_letter) > 0 ? [true] : []
+    for_each = var.lambda_dead_letter_sqs_queue_arn != null ? [true] : []
     content {
-      target_arn = aws_sqs_queue.lambda_dead_letter[0].arn
+      target_arn = var.lambda_dead_letter_sqs_queue_arn
     }
   }
   tags = {
@@ -78,22 +78,22 @@ resource "aws_lambda_provisioned_concurrency_config" "function" {
 }
 
 resource "aws_lambda_function_event_invoke_config" "function" {
-  count                        = var.enable_asynchronous_invocations ? 1 : 0
+  count                        = var.lambda_on_success_sqs_queue_arn != null || var.lambda_on_failure_sqs_queue_arn != null ? 1 : 0
   function_name                = aws_lambda_function.function.function_name
   maximum_event_age_in_seconds = var.lambda_maximum_event_age_in_seconds
   maximum_retry_attempts       = var.lambda_maximum_retry_attempts
   qualifier                    = aws_lambda_function.function.version
   destination_config {
     dynamic "on_success" {
-      for_each = length(aws_sqs_queue.lambda_on_success) > 0 ? [true] : []
+      for_each = var.lambda_on_success_sqs_queue_arn != null ? [true] : []
       content {
-        destination = aws_sqs_queue.lambda_on_success[0].arn
+        destination = var.lambda_on_success_sqs_queue_arn
       }
     }
     dynamic "on_failure" {
-      for_each = length(aws_sqs_queue.lambda_on_failure) > 0 ? [true] : []
+      for_each = var.lambda_on_failure_sqs_queue_arn != null ? [true] : []
       content {
-        destination = aws_sqs_queue.lambda_on_failure[0].arn
+        destination = var.lambda_on_failure_sqs_queue_arn
       }
     }
   }
@@ -158,16 +158,16 @@ resource "aws_iam_role_policy" "function" {
         }
       ],
       (
-        var.enable_asynchronous_invocations ? [
+        var.lambda_dead_letter_sqs_queue_arn != null || var.lambda_on_success_sqs_queue_arn != null || var.lambda_on_failure_sqs_queue_arn != null ? [
           {
-            Sid    = "AllowSQSAccess"
+            Sid    = "AllowSQSSendMessage"
             Effect = "Allow"
             Action = ["sqs:SendMessage"]
-            Resource = [
-              aws_sqs_queue.lambda_dead_letter[0].arn,
-              aws_sqs_queue.lambda_on_success[0].arn,
-              aws_sqs_queue.lambda_on_failure[0].arn
-            ]
+            Resource = compact([
+              var.lambda_dead_letter_sqs_queue_arn,
+              var.lambda_on_success_sqs_queue_arn,
+              var.lambda_on_failure_sqs_queue_arn
+            ])
           }
         ] : []
       ),
@@ -183,106 +183,6 @@ resource "aws_iam_role_policy" "function" {
       )
     )
   })
-}
-
-resource "aws_sqs_queue" "sqs_dead_letter" {
-  count                             = var.enable_asynchronous_invocations ? 1 : 0
-  name                              = "${var.system_name}-${var.env_type}-sqs-dead-letter-sqs-queue"
-  visibility_timeout_seconds        = var.sqs_visibility_timeout_seconds
-  message_retention_seconds         = var.sqs_message_retention_seconds
-  max_message_size                  = var.sqs_max_message_size
-  delay_seconds                     = var.sqs_delay_seconds
-  receive_wait_time_seconds         = var.sqs_receive_wait_time_seconds
-  fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
-  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
-  kms_master_key_id                 = var.kms_key_arn
-  kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-sqs-dead-letter-sqs-queue"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
-}
-
-resource "aws_sqs_queue" "lambda_dead_letter" {
-  count                      = var.enable_asynchronous_invocations ? 1 : 0
-  name                       = "${var.system_name}-${var.env_type}-lambda-dead-letter-sqs-queue"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-  message_retention_seconds  = var.sqs_message_retention_seconds
-  max_message_size           = var.sqs_max_message_size
-  delay_seconds              = var.sqs_delay_seconds
-  receive_wait_time_seconds  = var.sqs_receive_wait_time_seconds
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.sqs_dead_letter[0].arn
-    maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
-  })
-  fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
-  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
-  kms_master_key_id                 = var.kms_key_arn
-  kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-lambda-dead-letter-sqs-queue"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
-}
-
-resource "aws_sqs_queue" "lambda_on_success" {
-  count                      = var.enable_asynchronous_invocations ? 1 : 0
-  name                       = "${var.system_name}-${var.env_type}-lambda-on-success-sqs-queue"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-  message_retention_seconds  = var.sqs_message_retention_seconds
-  max_message_size           = var.sqs_max_message_size
-  delay_seconds              = var.sqs_delay_seconds
-  receive_wait_time_seconds  = var.sqs_receive_wait_time_seconds
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.sqs_dead_letter[0].arn
-    maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
-  })
-  fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
-  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
-  kms_master_key_id                 = var.kms_key_arn
-  kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-lambda-on-success-sqs-queue"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
-}
-
-resource "aws_sqs_queue" "lambda_on_failure" {
-  count                      = var.enable_asynchronous_invocations ? 1 : 0
-  name                       = "${var.system_name}-${var.env_type}-lambda-on-failure-sqs-queue"
-  visibility_timeout_seconds = var.sqs_visibility_timeout_seconds
-  message_retention_seconds  = var.sqs_message_retention_seconds
-  max_message_size           = var.sqs_max_message_size
-  delay_seconds              = var.sqs_delay_seconds
-  receive_wait_time_seconds  = var.sqs_receive_wait_time_seconds
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.sqs_dead_letter[0].arn
-    maxReceiveCount     = var.sqs_redrive_policy_max_receive_count
-  })
-  fifo_queue                        = var.sqs_fifo_queue
-  content_based_deduplication       = var.sqs_fifo_queue ? var.sqs_content_based_deduplication : null
-  deduplication_scope               = var.sqs_fifo_queue ? var.sqs_deduplication_scope : null
-  fifo_throughput_limit             = var.sqs_fifo_queue ? var.sqs_fifo_throughput_limit : null
-  sqs_managed_sse_enabled           = var.kms_key_arn == null ? true : null
-  kms_master_key_id                 = var.kms_key_arn
-  kms_data_key_reuse_period_seconds = var.kms_key_arn != null ? var.sqs_kms_data_key_reuse_period_seconds : null
-  tags = {
-    Name       = "${var.system_name}-${var.env_type}-lambda-on-failure-sqs-queue"
-    SystemName = var.system_name
-    EnvType    = var.env_type
-  }
 }
 
 resource "aws_iam_role" "client" {
@@ -367,7 +267,7 @@ resource "aws_iam_role_policy" "client" {
         },
       ],
       (
-        var.enable_asynchronous_invocations ? [
+        var.lambda_dead_letter_sqs_queue_arn != null || var.lambda_on_success_sqs_queue_arn != null || var.lambda_on_failure_sqs_queue_arn != null ? [
           {
             Sid    = "AllowSQSReadOnlyAccess"
             Effect = "Allow"
@@ -384,7 +284,7 @@ resource "aws_iam_role_policy" "client" {
         ] : []
       ),
       (
-        var.enable_asynchronous_invocations ? [
+        var.lambda_dead_letter_sqs_queue_arn != null || var.lambda_on_success_sqs_queue_arn != null || var.lambda_on_failure_sqs_queue_arn != null ? [
           {
             Sid    = "AllowSQSReadWriteAccess"
             Effect = "Allow"
