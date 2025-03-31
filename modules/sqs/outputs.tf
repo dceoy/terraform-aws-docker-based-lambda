@@ -37,3 +37,13 @@ output "lambda_on_failure_sqs_queue_url" {
   description = "Lambda on-failure SQS queue URL"
   value       = length(aws_sqs_queue.lambda_on_failure) > 0 ? aws_sqs_queue.lambda_on_failure[0].url : null
 }
+
+output "scheduler_dead_letter_sqs_queue_arn" {
+  description = "EventBridge Scheduler dead-letter SQS queue ARN"
+  value       = length(aws_sqs_queue.scheduler_dead_letter) > 0 ? aws_sqs_queue.scheduler_dead_letter[0].arn : null
+}
+
+output "scheduler_dead_letter_sqs_queue_url" {
+  description = "EventBridge Scheduler dead-letter SQS queue URL"
+  value       = length(aws_sqs_queue.scheduler_dead_letter) > 0 ? aws_sqs_queue.scheduler_dead_letter[0].url : null
+}

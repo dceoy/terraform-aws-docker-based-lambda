@@ -43,8 +43,8 @@ inputs = {
   s3_iam_policy_arn                          = dependency.s3.outputs.s3_iam_policy_arn
   lambda_client_iam_role_managed_policy_arns = dependency.s3.outputs.s3_iam_policy_arn != null ? [dependency.s3.outputs.s3_iam_policy_arn] : []
   lambda_dead_letter_sqs_queue_arn           = dependency.sqs.outputs.lambda_dead_letter_sqs_queue_arn
-  lambda_on_success_queue_arn                = dependency.sqs.outputs.sqs_on_success_queue_arn
-  lambda_on_failure_queue_arn                = dependency.sqs.outputs.sqs_on_failure_queue_arn
+  lambda_on_success_queue_arn                = dependency.sqs.outputs.lambda_on_success_sqs_queue_arn
+  lambda_on_failure_queue_arn                = dependency.sqs.outputs.lambda_on_failure_sqs_queue_arn
 }
 
 terraform {
