@@ -1,10 +1,10 @@
 output "lambda_function_arn" {
-  description = "Lambda Function ARN"
+  description = "Lambda function ARN"
   value       = aws_lambda_function.function.arn
 }
 
 output "lambda_function_qualified_arn" {
-  description = "Lambda Function qualified ARN"
+  description = "Lambda function qualified ARN"
   value       = aws_lambda_function.function.qualified_arn
 }
 
