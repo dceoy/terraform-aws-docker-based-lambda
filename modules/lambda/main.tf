@@ -8,6 +8,7 @@ resource "aws_lambda_function" "function" {
   memory_size                    = var.lambda_memory_size
   timeout                        = var.lambda_timeout
   reserved_concurrent_executions = var.lambda_reserved_concurrent_executions
+  publish                        = true
   logging_config {
     log_group             = aws_cloudwatch_log_group.function.name
     log_format            = var.lambda_logging_config_log_format
@@ -70,11 +71,19 @@ resource "aws_cloudwatch_log_group" "function" {
   }
 }
 
+resource "aws_lambda_alias" "function" {
+  name             = local.lambda_alias_name
+  description      = "Alias for the latest version of ${aws_lambda_function.function.function_name}"
+  function_name    = aws_lambda_function.function.function_name
+  function_version = aws_lambda_function.function.version
+}
+
 resource "aws_lambda_provisioned_concurrency_config" "function" {
   count                             = var.lambda_provisioned_concurrent_executions > -1 ? 1 : 0
   function_name                     = aws_lambda_function.function.function_name
-  qualifier                         = aws_lambda_function.function.version
+  qualifier                         = aws_lambda_alias.function.name
   provisioned_concurrent_executions = var.lambda_provisioned_concurrent_executions
+  skip_destroy                      = false
 }
 
 resource "aws_lambda_function_event_invoke_config" "function" {

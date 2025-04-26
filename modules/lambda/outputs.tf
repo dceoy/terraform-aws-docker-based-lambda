@@ -13,6 +13,11 @@ output "lambda_function_version" {
   value       = aws_lambda_function.function.version
 }
 
+output "lambda_alias_invoke_arn" {
+  description = "Lambda alias invoke ARN"
+  value       = aws_lambda_alias.function.invoke_arn
+}
+
 output "lambda_execution_iam_role_arn" {
   description = "Lambda execution IAM role ARN"
   value       = aws_iam_role.function.arn

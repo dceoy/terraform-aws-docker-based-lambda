@@ -7,4 +7,5 @@ locals {
   region               = data.aws_region.current.name
   lambda_function_name = var.lambda_function_name != null ? var.lambda_function_name : "${var.system_name}-${var.env_type}-lambda-function"
   lambda_image_uri     = var.lambda_image_uri != null ? var.lambda_image_uri : "${local.account_id}.dkr.ecr.${local.region}.amazonaws.com/${local.lambda_function_name}:latest"
+  lambda_alias_name    = var.lambda_alias_name != null ? var.lambda_alias_name : var.env_type
 }
