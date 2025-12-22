@@ -74,9 +74,9 @@ def test_lambda_asynchronous_invocation(
     lambda_client: Any,
     sqs_client: Any,
     sqs_queue_urls: dict[str, str],
-    polling_interval: int = 1,
-    polling_timeout: int = 900,
 ) -> None:
+    polling_interval = 1
+    polling_timeout = 900
     input_event = {"job_id": str(uuid.uuid4())}
     response = lambda_client.invoke(
         FunctionName=_LAMBDA_FUNCTION_NAME,
