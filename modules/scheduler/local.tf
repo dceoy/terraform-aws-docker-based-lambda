@@ -4,6 +4,6 @@ data "aws_region" "current" {}
 
 locals {
   account_id           = data.aws_caller_identity.current.account_id
-  region               = data.aws_region.current.name
+  region               = data.aws_region.current.id
   lambda_function_name = split(":", var.lambda_function_arn)[6]
 }

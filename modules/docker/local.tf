@@ -4,7 +4,7 @@ data "aws_region" "current" {}
 
 locals {
   account_id                   = data.aws_caller_identity.current.account_id
-  region                       = data.aws_region.current.name
+  region                       = data.aws_region.current.id
   docker_image_repository      = var.ecr_repository_url != null ? var.ecr_repository_url : "${local.account_id}.dkr.ecr.${local.region}.amazonaws.com/${var.system_name}-${var.env_type}-lambda-function"
   docker_image_primary_name    = "${local.docker_image_repository}:${var.docker_image_primary_tag}"
   docker_image_secondary_names = [for t in var.ecr_image_secondary_tags : (strcontains(t, ":") ? t : "${local.docker_image_repository}:${t}")]
