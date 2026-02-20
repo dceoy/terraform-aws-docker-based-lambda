@@ -28,7 +28,7 @@ group "default" {
 
 target "lambda-handler" {
   tags       = ["${REGISTRY}/lambda-hello-world:${TAG}"]
-  context    = "./src"
+  context    = "."
   dockerfile = "Dockerfile"
   target     = "app"
   platforms  = ["linux/arm64"]

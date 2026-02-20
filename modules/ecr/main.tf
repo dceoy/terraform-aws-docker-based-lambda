@@ -1,8 +1,8 @@
-# trivy:ignore:avd-aws-0031
-# trivy:ignore:avd-aws-0033
+# trivy:ignore:AVD-AWS-0031
+# trivy:ignore:AVD-AWS-0033
 resource "aws_ecr_repository" "container" {
-  # checkov:skip=CKV_AWS_136: repository uses AES256 encryption.
-  # checkov:skip=CKV_AWS_51: mutable tags are required for promotion workflows.
+  # checkov:skip=CKV_AWS_136:repository uses AES256 encryption.
+  # checkov:skip=CKV_AWS_51:mutable tags are required for promotion workflows.
   name                 = local.ecr_repository_name
   image_tag_mutability = var.ecr_image_tag_mutability
   force_delete         = var.ecr_force_delete

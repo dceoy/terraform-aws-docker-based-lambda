@@ -35,8 +35,8 @@ RUN \
 RUN \
       --mount=type=cache,target=/root/.cache/pip \
       --mount=type=bind,source=.,target=/mnt/host \
-      /usr/local/bin/python -m pip install -U awslambdaric pip \
-      && /usr/local/bin/python -m pip install -U -r /mnt/host/requirements.txt
+      cp -r /mnt/host /tmp/project \
+      && /usr/local/bin/python -m pip install -U /tmp/project
 
 HEALTHCHECK NONE
 
@@ -57,7 +57,7 @@ RUN \
 USER "${USER_NAME}"
 
 RUN \
-      --mount=type=bind,source=.,target=/mnt/host \
+      --mount=type=bind,source=./src,target=/mnt/host \
       cp /mnt/host/main.py "${LAMBDA_TASK_ROOT}/"
 
 WORKDIR ${LAMBDA_TASK_ROOT}

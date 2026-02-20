@@ -52,12 +52,23 @@ jobs:
       merge-pr: ${{ github.event_name == 'pull_request' }}
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  python-lint-and-scan:
+    if: >
+      github.event_name == 'push'
+      || github.event_name == 'pull_request'
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint-and-test')
+    permissions:
+      contents: read
+    uses: dceoy/gh-actions-for-devops/.github/workflows/python-package-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
+    with:
+      package-path: .
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request'
       && github.actor == 'dependabot[bot]'
       && (! startswith(github.head_ref, 'dependabot/terraform/'))
     needs:
+      - python-lint-and-scan
       - terraform-lint-and-scan
     permissions:
       contents: write

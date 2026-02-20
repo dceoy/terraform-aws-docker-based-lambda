@@ -1,6 +1,6 @@
 resource "aws_kinesis_firehose_delivery_stream" "logs" {
-  # checkov:skip=CKV_AWS_241: destination S3 encryption is enforced
-  # checkov:skip=CKV_AWS_240: destination S3 encryption covers stored logs
+  # checkov:skip=CKV_AWS_241:destination S3 encryption is enforced
+  # checkov:skip=CKV_AWS_240:destination S3 encryption covers stored logs
   for_each    = local.source_cloudwatch_logs_log_group_names
   name        = "${var.system_name}-${var.env_type}-${each.key}-s3-firehose-stream"
   destination = "extended_s3"
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy" "firehose" {
 
 # trivy:ignore:avd-aws-0017
 resource "aws_cloudwatch_log_group" "firehose" {
-  # checkov:skip=CKV_AWS_338: retention is configured via variable per environment
+  # checkov:skip=CKV_AWS_338:retention is configured via variable per environment
   count             = length(local.source_cloudwatch_logs_log_group_names) > 0 ? 1 : 0
   name              = "/${var.system_name}/${var.env_type}/firehose"
   retention_in_days = var.cloudwatch_logs_retention_in_days

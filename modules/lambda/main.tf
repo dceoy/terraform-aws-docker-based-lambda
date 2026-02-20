@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "function" {
-  # checkov:skip=CKV_AWS_173: env var encryption is optional per deployment
-  # checkov:skip=CKV_AWS_272: code signing is managed outside this module
+  # checkov:skip=CKV_AWS_173:env var encryption is optional per deployment
+  # checkov:skip=CKV_AWS_272:code signing is managed outside this module
   function_name                  = local.lambda_function_name
   description                    = local.lambda_function_name
   role                           = aws_iam_role.function.arn
@@ -63,7 +63,7 @@ resource "aws_lambda_function" "function" {
 
 # trivy:ignore:avd-aws-0017
 resource "aws_cloudwatch_log_group" "function" {
-  # checkov:skip=CKV_AWS_338: retention is configured via variable per environment
+  # checkov:skip=CKV_AWS_338:retention is configured via variable per environment
   name              = "/${var.system_name}/${var.env_type}/lambda/${local.lambda_function_name}"
   retention_in_days = var.cloudwatch_logs_retention_in_days
   kms_key_id        = var.kms_key_arn
