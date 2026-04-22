@@ -6,7 +6,7 @@ authors = [{name = "Daichi Narushima", email = "dceoy@users.noreply.github.com"}
 maintainers = [{name = "Daichi Narushima", email = "dceoy@users.noreply.github.com"}]
 requires-python = ">=3.12"
 dependencies = [
-  "aws-lambda-powertools[tracer] >= 3.27.0",
+  "aws-lambda-powertools[tracer] >= 3.28.0",
   "awslambdaric >= 4.0.0",
 ]
 
