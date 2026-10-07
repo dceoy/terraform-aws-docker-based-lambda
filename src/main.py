@@ -13,8 +13,8 @@ tracer = Tracer()  # type: ignore[reportUnknownVariableType]
 @tracer.capture_lambda_handler  # type: ignore[reportUnknownMemberType, reportUntypedFunctionDecorator]
 def lambda_handler(
     event: dict[str, Any],
-    context: Any,
-) -> dict[str, Any]:  # ruff: ignore[ANN401]
+    context: Any,  # ruff: ignore[any-type]
+) -> dict[str, Any]:
     """Lambda function handler.
 
     Args:
