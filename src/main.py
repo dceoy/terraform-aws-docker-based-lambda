@@ -11,7 +11,10 @@ tracer = Tracer()  # type: ignore[reportUnknownVariableType]
 
 @logger.inject_lambda_context(log_event=True)  # type: ignore[reportUnknownMemberType]
 @tracer.capture_lambda_handler  # type: ignore[reportUnknownMemberType, reportUntypedFunctionDecorator]
-def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:  # noqa: ANN401
+def lambda_handler(
+    event: dict[str, Any],
+    context: Any,
+) -> dict[str, Any]:  # ruff: ignore[ANN401]
     """Lambda function handler.
 
     Args:
