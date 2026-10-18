@@ -104,7 +104,7 @@ resource "aws_iam_role_policy" "firehose" {
   })
 }
 
-# trivy:ignore:avd-aws-0017
+# trivy:ignore:AWS-0017
 resource "aws_cloudwatch_log_group" "firehose" {
   # checkov:skip=CKV_AWS_338:retention is configured via variable per environment
   count             = length(local.source_cloudwatch_logs_log_group_names) > 0 ? 1 : 0
