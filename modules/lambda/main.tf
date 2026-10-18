@@ -63,7 +63,7 @@ resource "aws_lambda_function" "function" {
   }
 }
 
-# trivy:ignore:avd-aws-0017
+# trivy:ignore:AWS-0017
 resource "aws_cloudwatch_log_group" "function" {
   # checkov:skip=CKV_AWS_338:retention is configured via variable per environment
   name              = "/${var.system_name}/${var.env_type}/lambda/${local.lambda_function_name}"
