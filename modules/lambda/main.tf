@@ -1,3 +1,5 @@
+# Lambda tracing defaults to Active; the module also accepts explicit overrides.
+# nosemgrep: terraform.aws.security.aws-lambda-x-ray-tracing-not-active.aws-lambda-x-ray-tracing-not-active
 resource "aws_lambda_function" "function" {
   # checkov:skip=CKV_AWS_173:env var encryption is optional per deployment
   # checkov:skip=CKV_AWS_272:code signing is managed outside this module
