@@ -1,5 +1,5 @@
-# trivy:ignore:AVD-AWS-0031
-# trivy:ignore:AVD-AWS-0033
+# trivy:ignore:AWS-0031
+# trivy:ignore:AWS-0033
 # Mutable ECR tags are required for the deployment promotion workflow.
 # nosemgrep: terraform.aws.security.aws-ecr-mutable-image-tags.aws-ecr-mutable-image-tags
 resource "aws_ecr_repository" "container" {
