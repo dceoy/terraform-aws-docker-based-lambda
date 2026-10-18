@@ -1,8 +1,7 @@
+# Mutable ECR tags are required for the deployment promotion workflow.
 # trivy:ignore:AWS-0031
 # trivy:ignore:AWS-0033
-# Mutable ECR tags are required for the deployment promotion workflow.
-# nosemgrep: terraform.aws.security.aws-ecr-mutable-image-tags.aws-ecr-mutable-image-tags
-resource "aws_ecr_repository" "container" {
+resource "aws_ecr_repository" "container" { # nosemgrep: terraform.aws.security.aws-ecr-mutable-image-tags.aws-ecr-mutable-image-tags
   # checkov:skip=CKV_AWS_136:repository uses AES256 encryption.
   # checkov:skip=CKV_AWS_51:mutable tags are required for promotion workflows.
   name                 = local.ecr_repository_name
