@@ -34,5 +34,6 @@ inputs = {
 }
 
 terraform {
-  source = "${get_repo_root()}/modules/scheduler"
+  source                   = "${get_repo_root()}/modules/scheduler"
+  copy_terraform_lock_file = false
 }

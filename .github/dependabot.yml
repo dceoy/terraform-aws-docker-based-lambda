@@ -25,8 +25,7 @@ updates:
       default-days: 1
   - package-ecosystem: terraform
     directories:
-      - /modules/kms/
-      - /modules/docker/
+      - /modules/*
     schedule:
       interval: daily
     open-pull-requests-limit: 10

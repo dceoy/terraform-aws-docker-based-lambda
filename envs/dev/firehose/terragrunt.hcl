@@ -41,5 +41,6 @@ inputs = {
 }
 
 terraform {
-  source = "${get_repo_root()}/modules/firehose"
+  source                   = "${get_repo_root()}/modules/firehose"
+  copy_terraform_lock_file = false
 }
