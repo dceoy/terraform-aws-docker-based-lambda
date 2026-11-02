@@ -6,8 +6,8 @@ authors = [{name = "Daichi Narushima", email = "dceoy@users.noreply.github.com"}
 maintainers = [{name = "Daichi Narushima", email = "dceoy@users.noreply.github.com"}]
 requires-python = ">=3.12"
 dependencies = [
-  "aws-lambda-powertools[tracer] >= 3.37.0",
-  "awslambdaric >= 4.2.2",
+  "aws-lambda-powertools[tracer] >= 3.38.0",
+  "awslambdaric >= 4.2.3",
 ]
 
 [project.urls]
@@ -16,7 +16,7 @@ repository = "https://github.com/dceoy/terraform-aws-docker-based-lambda.git"
 
 [dependency-groups]
 dev = [
-  "ruff >= 0.17.2",
+  "ruff >= 0.17.3",
   "pyright >= 1.1.414",
 ]
 
